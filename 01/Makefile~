@@ -1,0 +1,17 @@
+CPP = g++
+FLAGS = -O1 -Wall -std=c++17
+#SIZE = 512
+OBJ = test_1.o test_2.o #test_3.o test_4.o test_5.o test_6.o test_7.o
+
+test: $(OBJ) #allocator.o
+	$(CPP) $(FLAGS) $(OBJ) -o run
+	./run #valgrind --leak-check=yes ./run
+
+allocator.o: allocator.cpp
+	$(CPP) $(FLAGS) allocator.cpp -c -o allocator.o
+
+test_1: test_1.cpp
+
+
+clean: 
+	rm *.o run
