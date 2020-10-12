@@ -1,5 +1,6 @@
-#include <iostream>
+#include <cstddef>
 #include "allocator.h"
+
 
 Allocator::Allocator() = default;
 Allocator::~Allocator() {
@@ -24,7 +25,7 @@ void Allocator::make_allocator(const size_t max_size) {
 char *Allocator::alloc(const size_t size) {
     if (off + size <= len) {
         off += size;
-        return head + (off - size) * sizeof(char);
+        return head + off - size;
     } else {
         return nullptr;
     }
