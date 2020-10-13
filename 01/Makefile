@@ -2,7 +2,7 @@ CPP = g++
 FLAGS = -O1 -Wall -std=c++17
 TESTS = test_1 test_2 test_3 test_4 test_5 test_6 test_7 test_8 test_9
 
-all : test clean
+all : $(TESTS)
 
 test: $(TESTS)
 	./test_1
@@ -41,8 +41,6 @@ test_8: test_8.cpp allocator.o
 
 test_9: test_9.cpp allocator.o
 	$(CPP) $(FLAGS) test_9.cpp allocator.o -o test_9
-
-
 
 allocator.o: allocator.cpp
 	$(CPP) $(FLAGS) allocator.cpp -c -o allocator.o
