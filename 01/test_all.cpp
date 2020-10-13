@@ -1,14 +1,18 @@
 #include <iostream>
 #include "allocator.h"
 
-static int n{};
+void print_test_number()
+{
+    static int n{1};
+    std::cout << "Test " << n << ": ";
+    ++n;
+}
 
 /* Test 1 */
 /* One good alloc */
 void test_ga() 
 {
-    ++n;
-    std::cout << "Test " << n << ": ";
+    print_test_number();
     Allocator heap;
     heap.make_allocator(10);
     char *p1 = heap.alloc(5);
@@ -23,8 +27,7 @@ void test_ga()
 /* Two good allocs */
 void test_ga_ga()
 {
-    ++n;
-    std::cout << "Test " << n << ": ";
+    print_test_number();
     Allocator heap;
     heap.make_allocator(10);
     char *p1 = heap.alloc(5);
@@ -40,8 +43,7 @@ void test_ga_ga()
 /* Bad alloc */
 void test_ba()
 {
-    ++n;
-    std::cout << "Test " << n << ": ";
+    print_test_number();
     Allocator heap;
     heap.make_allocator(5);
     char *p1 = heap.alloc(6);
@@ -56,8 +58,7 @@ void test_ba()
 /* Bad alloc after good alloc */
 void test_ga_ba()
 {
-    ++n;
-    std::cout << "Test " << n << ": ";
+    print_test_number();
     Allocator heap;
     heap.make_allocator(5);
     char *p1 = heap.alloc(3);
@@ -74,8 +75,7 @@ void test_ga_ba()
 /* Good alloc after reset */
 void test_rs_ga()
 {
-    ++n;
-    std::cout << "Test " << n << ": ";
+    print_test_number();
     Allocator heap;
     heap.make_allocator(10);
     char *p1 = heap.alloc(5);
@@ -92,8 +92,7 @@ void test_rs_ga()
 /* Bad alloc after reset */
 void test_rs_ba()
 {
-    ++n;
-    std::cout << "Test " << n << ": ";
+    print_test_number();
     Allocator heap;
     heap.make_allocator(10);
     char *p1 = heap.alloc(5);
@@ -110,8 +109,7 @@ void test_rs_ba()
 /* Valid reallocation to less size and good alloc */
 void test_gra_ga()
 {
-    ++n;
-    std::cout << "Test " << n << ": ";
+    print_test_number();
     Allocator heap;
     heap.make_allocator(10);
     char *p1 = heap.alloc(5);
@@ -128,8 +126,7 @@ void test_gra_ga()
 /* Valid reallocation to less size and bad alloc */
 void test_gra_ba()
 {
-    ++n;
-    std::cout << "Test " << n << ": ";
+    print_test_number();
     Allocator heap;
     heap.make_allocator(10);
     char *p1 = heap.alloc(5);
@@ -146,8 +143,7 @@ void test_gra_ba()
 /* Invalid reallocation to less size */
 void test_bra()
 {
-    ++n;
-    std::cout << "Test " << n << ": ";
+    print_test_number();
     try {
         Allocator heap;
         heap.make_allocator(10);
