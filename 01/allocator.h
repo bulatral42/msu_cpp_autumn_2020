@@ -1,3 +1,5 @@
+#pragma once
+
 class Allocator
 {
     size_t size{}, off{}, len{};
