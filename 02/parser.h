@@ -1,43 +1,53 @@
 #pragma once
 
-#include <string>
-#include <cstdint>
-#include <cinttypes>
-#include <cstdio>
+#include <functional>
+constexpr int MAX_MSG_LEN = 255;  /* Exception message buffer size */
 
-using void_f = void (*)(); 
-using str_procedure = void (*)(std::string);//, void *ptr=nullptr); /* takes token, makes processing */
-using num_procedure = void (*)(uint64_t);//, void *ptr=nullptr); /* and writes result to some ptr */
-//using str_retn = std::string (*)(std::string); /* returns  */
-//using num_retn = uint64_t (*)(uint64_t);
+struct Parser_exception : std::exception {
+    Parser_exception(const char *);
+    Parser_exception(int);
+    const char* what() const throw();
+    int code() const throw();
+    ~Parser_exception();
+private:
+    char msg[MAX_MSG_LEN + 1] = { 0 };
+    int ex_code{}; 
+};
+
+struct Parser_stats { /* Parser statistics */
+    int tokens{}, strings{}, numbers{};
+};
 
 void parser_start_default();
-void parser_end_default();
+void parser_end_default(const Parser_stats &);
+void parser_str_default(const std::string &);
+void parser_num_default(uint64_t);
+
+using void_f = std::function<void()>; 
+using str_procedure = std::function<void(std::string)>;
+using num_procedure = std::function<void(uint64_t)>;
+using end_procedure = std::function<void(const Parser_stats &stats)>;
 
 class Parser
 {
-    str_procedure str_handler{nullptr};
-    num_procedure num_handler{nullptr};
-    //void_f start{nullptr}, end{nullptr};
+    str_procedure str_handler{parser_str_default};
+    num_procedure num_handler{parser_num_default};
+    void_f start{parser_start_default};
+    end_procedure end{parser_end_default};
     
-    void_f start{parser_start_default}, end{parser_end_default};
-    //num_retn num_handler_retn{nullptr};
-    //str_retn str_handler_retn{nullptr};
-        
-    int tokens_cnt, str_cnt{}, num_cnt{};
+    Parser_stats stats;
     
-    std::string get_token(std::string::const_iterator &, std::string::const_iterator &);
-    void start_default();
-    void end_default();
-    bool is_number(const std::string &);
+    std::string get_token(std::string::const_iterator &, 
+                          const std::string::const_iterator &);
+    bool is_number(const std::string &) const;
     
 public:
     Parser();
     ~Parser();
     void set_start_callback(void_f);
-    void set_end_callback(void_f);
+    void set_end_callback(end_procedure);
     void set_number_callback(num_procedure);
     void set_string_callback(str_procedure);
-    void operator()(const std::string &);
+    void operator()(const std::string &);  /* Parsing operator */
 };
 
