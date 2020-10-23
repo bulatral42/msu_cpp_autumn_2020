@@ -87,6 +87,22 @@ void Parser::set_string_callback(str_procedure func) {
     str_handler = func;
 }
 
+void Parser::string_callback(const std::string &str) {
+    ++stats.strings;
+    if (str_handler == nullptr) {
+        throw Parser_exception("Nullptr is not callable");
+    }
+    str_handler(str);
+}
+
+void Parser::number_callback(uint64_t num) {
+    ++stats.strings;
+    if (num_handler == nullptr) {
+        throw Parser_exception("Nullptr is not callable");
+    }
+    num_handler(num);
+}
+
 bool Parser::is_number(const std::string &token) const {
     bool num_flag{true};
     for (auto &it2 : token) {
@@ -112,25 +128,11 @@ void Parser::operator()(const std::string &text) {
         if (is_number(token)) {
             try {
                 uint64_t num = std::stoull(token);
-                ++stats.numbers;
-                
-                if (num_handler == nullptr) {
-                    throw Parser_exception("Nullptr is not callable");
-                }
-                num_handler(num);
+                number_callback(num);
             } catch (std::logic_error &le) {
-                ++stats.strings;
-                if (start == nullptr) {
-                    throw Parser_exception("Nullptr is not callable");
-                }
-                str_handler(token);
-            }
+                string_callback(token);            }
         } else {
-            ++stats.strings;
-            if (start == nullptr) {
-                throw Parser_exception("Nullptr is not callable");
-            }
-            str_handler(token);
+            string_callback(token);
         }
         if (it == it_end) { /* Last token ended at the end of text */
             break;

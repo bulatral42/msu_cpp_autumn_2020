@@ -39,6 +39,8 @@ class Parser
     
     std::string get_token(std::string::const_iterator &, 
                           const std::string::const_iterator &);
+    void string_callback(const std::string &);
+    void number_callback(uint64_t);
     bool is_number(const std::string &) const;
     
 public:
