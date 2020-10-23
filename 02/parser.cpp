@@ -130,7 +130,8 @@ void Parser::operator()(const std::string &text) {
                 uint64_t num = std::stoull(token);
                 number_callback(num);
             } catch (std::logic_error &le) {
-                string_callback(token);            }
+                string_callback(token);            
+            }
         } else {
             string_callback(token);
         }
