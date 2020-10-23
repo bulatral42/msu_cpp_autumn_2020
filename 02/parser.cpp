@@ -110,12 +110,21 @@ void Parser::operator()(const std::string &text) {
         }
         ++stats.tokens;
         if (is_number(token)) {
-            ++stats.numbers;
-            uint64_t num = std::stoull(token);
-            if (num_handler == nullptr) {
-                throw Parser_exception("Nullptr is not callable");
+            try {
+                uint64_t num = std::stoull(token);
+                ++stats.numbers;
+                
+                if (num_handler == nullptr) {
+                    throw Parser_exception("Nullptr is not callable");
+                }
+                num_handler(num);
+            } catch (std::logic_error &le) {
+                ++stats.strings;
+                if (start == nullptr) {
+                    throw Parser_exception("Nullptr is not callable");
+                }
+                str_handler(token);
             }
-            num_handler(num);
         } else {
             ++stats.strings;
             if (start == nullptr) {

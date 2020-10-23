@@ -245,6 +245,34 @@ void test_parse_maxnum()
     
 }
 
+/* Test 12 */
+/* Parsing over max allowed number */
+void test_parse_overnum() 
+{
+    print_test_number();
+    try {
+        uint64_t max = -1;
+        std::stringstream line;
+        line << max;
+        std::string over_str = line.str();
+        over_str[over_str.size() - 1] += 1;
+        Parser my_parser;
+        std::vector<uint64_t> v_num;
+        std::vector<std::string> v_str, ans_str{ over_str };
+        my_parser.set_number_callback([&](uint64_t x) { v_num.push_back(x); });
+        my_parser.set_string_callback([&](std::string x) { v_str.push_back(x); });
+        my_parser.set_start_callback(my_start);
+        my_parser.set_end_callback(my_end);
+        my_parser(over_str);
+        assert(v_num.empty() && ans_str == v_str && "Invalid numbers parsing\n");
+    } catch (Parser_exception &ex) {
+        assert(ex.code() && ex.what());
+    } catch (std::logic_error &le) {
+        assert(le.what());
+    }
+    
+}
+
 
 int main() 
 {
@@ -259,6 +287,6 @@ int main()
     test_parse_empty();
     test_parse_spaced();
     test_parse_maxnum();
-    
+    test_parse_overnum();
     return 0;
 }
