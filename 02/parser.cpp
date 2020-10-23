@@ -111,8 +111,7 @@ void Parser::operator()(const std::string &text) {
         ++stats.tokens;
         if (is_number(token)) {
             ++stats.numbers;
-            uint64_t num;
-            sscanf(token.c_str(), "%" SCNu64, &num);
+            uint64_t num = std::stoull(token);
             if (num_handler == nullptr) {
                 throw Parser_exception("Nullptr is not callable");
             }
