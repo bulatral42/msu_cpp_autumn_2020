@@ -77,7 +77,7 @@ void test_usr_null_set_no_call_str()
 }
 
 /* Test 4 */
-/* Nullptr is set to nimbers (warning) but no call is made */
+/* Nullptr is set to numbers (warning) but no call is made */
 void test_usr_null_set_no_call_num() 
 {
     print_test_number();
@@ -192,7 +192,7 @@ void test_parse_empty()
         my_parser.set_start_callback(my_start);
         my_parser.set_end_callback(my_end);
         my_parser("");
-        assert(v_str.empty() && v_num.empty() && "Too many strings or nimbers\n");
+        assert(v_str.empty() && v_num.empty() && "Too many strings or numbers\n");
     } catch (Parser_exception &ex) {
         assert(ex.code() && ex.what());
     }
@@ -213,7 +213,7 @@ void test_parse_spaced()
         my_parser.set_start_callback(my_start);
         my_parser.set_end_callback(my_end);
         my_parser("  \n  \r \t   \t \n");
-        assert(v_str.empty() && v_num.empty() && "Too many strings or nimbers\n");
+        assert(v_str.empty() && v_num.empty() && "Too many strings or nmbers\n");
     } catch (Parser_exception &ex) {
         assert(ex.code() && ex.what());
     }

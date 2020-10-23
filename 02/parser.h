@@ -1,6 +1,6 @@
 #pragma once
-
 #include <functional>
+
 constexpr int MAX_MSG_LEN = 255;  /* Exception message buffer size */
 
 struct Parser_exception : std::exception {
@@ -24,7 +24,7 @@ void parser_str_default(const std::string &);
 void parser_num_default(uint64_t);
 
 using void_f = std::function<void()>; 
-using str_procedure = std::function<void(std::string)>;
+using str_procedure = std::function<void(const std::string &)>;
 using num_procedure = std::function<void(uint64_t)>;
 using end_procedure = std::function<void(const Parser_stats &stats)>;
 
