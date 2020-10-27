@@ -16,17 +16,12 @@ int main()
     
     std::cout << a << std::endl;
     std::cout << b << std::endl;
-    /*std::cout << c << std::endl;
+    std::cout << c << std::endl;
     std::cout << d << std::endl;
     std::cout << e << std::endl;
     std::cout << f << std::endl;
-    */
+    
     c = a + q;
-    d = q - b;
-    std::cout << c << std::endl;
-    std::cout << d << std::endl;
-    /*c = a + q;
-    std::cout << c << std::endl;
     d = a - q;
     e = a * q;
     f = a / q;
@@ -36,14 +31,20 @@ int main()
     std::cout << e << std::endl;
     std::cout << f << std::endl;
     
-
+    c = q + a;
+    d = q - a;
+    e = q * a;
+    f = q / a;
+    
     std::cout << c << std::endl;
     std::cout << d << std::endl;
     std::cout << e << std::endl;
     std::cout << f << std::endl;
     
+    std::cout << Matrix(10) + 1 << std::endl;
+    
     //a[0][n] = 0;
     //a[n][0] = 0;
-    */   
+       
     return 0;
 }

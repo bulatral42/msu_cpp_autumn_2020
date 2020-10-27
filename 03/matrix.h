@@ -3,9 +3,6 @@
 #include <cstddef>
 #include <sstream>
 
-constexpr size_t N_DEFAULT = 16;
-
-
 class ProxyMatrix{
     int32_t *row_ptr;
     size_t col_cnt; 
@@ -21,16 +18,19 @@ class Matrix{
     
 public:
     Matrix(const size_t, const size_t, const int32_t val = 0);
-    Matrix(const int32_t val = 0);
+    Matrix(const int32_t val = 0);  /* For integer conversions */
     Matrix(const Matrix &);
-    const Matrix &operator =(const Matrix &mat);
     ~Matrix();
+    const Matrix &operator =(const Matrix &mat);
+    
     
     size_t get_rows() const;
     size_t get_columns() const;
     
     ProxyMatrix operator [](const size_t m) const;
-    friend std::ostream &operator <<(std::ostream &, Matrix &);
+    friend std::ostream &operator <<(std::ostream &, const Matrix &);
+    
+    const Matrix transp(bool inplace = true);  /* Inplace is only for squared */
     
     const Matrix &operator +=(const Matrix &);
     const Matrix &operator -=(const Matrix &);
@@ -41,9 +41,13 @@ public:
     const Matrix &operator -=(const int32_t);
     const Matrix &operator *=(const int32_t);
     const Matrix &operator /=(const int32_t);
+    
+    friend Matrix dot(const Matrix &, const Matrix &);  /* Matrix multiplication */
 };
 
-std::ostream &operator <<(std::ostream &, Matrix &);
+std::ostream &operator <<(std::ostream &, const Matrix &);
+
+Matrix dot(const Matrix &, const Matrix &);
 
 Matrix operator +(const Matrix &, const Matrix &);
 Matrix operator -(const Matrix &, const Matrix &);
@@ -54,9 +58,4 @@ Matrix operator +(const Matrix &, const int32_t);
 Matrix operator -(const Matrix &, const int32_t);
 Matrix operator *(const Matrix &, const int32_t);
 Matrix operator /(const Matrix &, const int32_t);
-/*
-Matrix operator+(const int32_t, const Matrix);
-Matrix operator-(const int32_t, const Matrix);
-Matrix operator*(const int32_t, const Matrix);
-Matrix operator/(const int32_t, const Matrix);
-*/
+
