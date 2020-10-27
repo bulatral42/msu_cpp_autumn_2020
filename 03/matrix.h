@@ -36,11 +36,13 @@ public:
     const Matrix &operator -=(const Matrix &);
     const Matrix &operator *=(const Matrix &);
     const Matrix &operator /=(const Matrix &);
+    bool operator ==(const Matrix &);
     
     const Matrix &operator +=(const int32_t);
     const Matrix &operator -=(const int32_t);
     const Matrix &operator *=(const int32_t);
     const Matrix &operator /=(const int32_t);
+    
     
     friend Matrix dot(const Matrix &, const Matrix &);  /* Matrix multiplication */
 };

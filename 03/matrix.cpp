@@ -66,6 +66,17 @@ size_t Matrix::get_columns() const {
     return columns;
 }
 
+bool Matrix::operator ==(const Matrix &other) {
+    if (rows != other.rows || columns != other.columns) {
+        throw std::logic_error("Matrices' shapes do not match");
+    }
+    for (size_t i = 0; i < rows * columns; ++i) {
+        if (head[i] != other.head[i]) {
+            return false;
+        }
+    }
+    return true;
+}
 
 /* Element indexing */
 ProxyMatrix Matrix::operator [](const size_t idx) const {
@@ -97,8 +108,6 @@ const Matrix Matrix::transp(bool inplace) {
 /* Matrix & Matrix operations */
 const Matrix &Matrix::operator +=(const Matrix &mat) {
     if (mat.rows != rows || mat.columns != columns) {
-        std::cout << mat.rows << ", " << rows << std::endl;
-        std::cout << mat.columns << ", " << columns << std::endl;
         throw std::logic_error("Matrices shapes do not match");
     }
     for (size_t i = 0; i < rows * columns; ++i) {
@@ -109,7 +118,7 @@ const Matrix &Matrix::operator +=(const Matrix &mat) {
 
 const Matrix &Matrix::operator -=(const Matrix &mat) {
     if (mat.rows != rows || mat.columns != columns) {
-        throw std::logic_error("Matrices shapes do not match");
+        throw std::logic_error("Matrices' shapes do not match");
     }
     for (size_t i = 0; i < rows * columns; ++i) {
         head[i] -= mat.head[i];
@@ -119,7 +128,7 @@ const Matrix &Matrix::operator -=(const Matrix &mat) {
 
 const Matrix &Matrix::operator *=(const Matrix &mat) {
     if (mat.rows != rows || mat.columns != columns) {
-        throw std::logic_error("Matrices shapes do not match");
+        throw std::logic_error("Matrices' shapes do not match");
     }
     for (size_t i = 0; i < rows * columns; ++i) {
         head[i] *= mat.head[i];
@@ -129,7 +138,7 @@ const Matrix &Matrix::operator *=(const Matrix &mat) {
 
 const Matrix &Matrix::operator /=(const Matrix &mat) {
     if (mat.rows != rows || mat.columns != columns) {
-        throw std::logic_error("Matrices shapes do not match");
+        throw std::logic_error("Matrices' shapes do not match");
     }
     for (size_t i = 0; i < rows * columns; ++i) {
         if (mat.head[i] == 0) {
@@ -239,7 +248,7 @@ Matrix operator /(const Matrix &a, const int32_t b) {
 Matrix dot(const Matrix &a, const Matrix &b) {
     size_t m = a.rows, n = a.columns, k = b.columns;
     if (n != b.rows) {
-        throw std::logic_error("Matroces shapes do not match");
+        throw std::logic_error("Matroces' shapes do not match");
     }
     Matrix c(m, k, 0);
     for (size_t i = 0; i < m; ++i) {
