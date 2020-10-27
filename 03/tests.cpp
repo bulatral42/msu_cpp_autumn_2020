@@ -1,6 +1,7 @@
 #include <iostream>
 #include <exception>
 #include <cassert>
+#include <sstream>
 #include "matrix.h"
 
 
@@ -11,17 +12,6 @@ void print_test_number()
     ++n;
 }
 
-/* Test  */
-/*  */
-void test_()
-{
-    print_test_number();
-    try {
-        
-    } catch (std::logic_error &ex) {
-        assert(ex.what());
-    }
-}
 
 /* Test 1 */
 /* Shape getters */
@@ -174,9 +164,225 @@ void test_equation()
     } catch (std::logic_error &ex) {
         std::cout << "Correct logic_error detected: " << ex.what() << std::endl;
     }
+    std::cout << "OK" << std::endl;
 }
 
+/* Test 7 */
+/* Output -- operator << */
+void test_out()
+{
+    print_test_number();
+    try {
+        Matrix a(3, 4);
+        for (size_t i = 0; i < 3; ++i) {
+            for (size_t j = 0; j < 4; ++j) {
+                a[i][j] = j - i + 1;
+            }
+        }
+        std::stringstream file;
+        file << a;
+        Matrix b(3, 4);
+        for (size_t i = 0; i < 3; ++i) {
+            for (size_t j = 0; j < 4; ++j) {
+                file >> b[i][j];
+            }
+        }
+        assert(a == b && "Wrong matrix output\n");
+    } catch (std::logic_error &ex) {
+        assert(ex.what());
+    }
+    std::cout << "OK" << std::endl;
+}
 
+/* Test 8 */
+/* Operations Matrix op= Matrix */
+void test_ops_mat_mat_1()
+{
+    print_test_number();
+    try {
+        Matrix a(3, 4, 12), b(3, 4, 7), c(3, 4, 3), cc(3, 4, 3), d(3, 4, 4);
+        c += d;
+        assert(c == b && "Wrong matrix sum\n");
+        c -= d;
+        assert(c == cc && "Wrong matrix substraction\n");
+        c *= d;
+        assert(c == a && "Wrong matrix element-by multiplication\n");
+        c /= d;
+        assert(c == cc && "Wrong matrix division\n");
+        
+    } catch (std::logic_error &ex) {
+        assert(ex.what());
+    }
+    std::cout << "OK" << std::endl;
+}
+
+/* Test 9 */
+/* Operations Matrix op Matrix */
+void test_ops_mat_mat_2()
+{
+    print_test_number();
+    try {
+        Matrix a(3, 4, 12), b(3, 4, 7), c(3, 4, 3), d(3, 4, 4), e(3, 4, 1);
+        Matrix res(3, 4);
+        res = c + d;
+        assert(res == b && "Wrong matrix sum\n");
+        res = d - c;
+        assert(res == e && "Wrong matrix substraction\n");
+        res = c * d;
+        assert(res == a && "Wrong matrix element-by multiplication\n");
+        res = d / c;
+        assert(res == e && "Wrong matrix division\n");
+        
+    } catch (std::logic_error &ex) {
+        assert(ex.what());
+    }
+    std::cout << "OK" << std::endl;
+}
+
+/* Test 10 */
+/* Operations Matrix op= Number */
+void test_ops_mat_num_1()
+{
+    print_test_number();
+    try {
+        Matrix a(3, 4, 12), b(3, 4, 7), c(3, 4, 3), cc(3, 4, 3);
+        int32_t d = 4;
+        c += d;
+        assert(c == b && "Wrong matrix sum\n");
+        c -= d;
+        assert(c == cc && "Wrong matrix substraction\n");
+        c *= d;
+        assert(c == a && "Wrong matrix element-by multiplication\n");
+        c /= d;
+        assert(c == cc && "Wrong matrix division\n");
+        
+    } catch (std::logic_error &ex) {
+        assert(ex.what());
+    }
+    std::cout << "OK" << std::endl;
+}
+
+/* Test 11 */
+/* Operations Matrix op Number */
+void test_ops_mat_num_2()
+{
+    print_test_number();
+    try {
+        Matrix a(3, 4, 12), b(3, 4, 7), c(3, 4, 3), e(3, 4, -1), f(3, 4, 0);
+        Matrix res(3, 4);
+        int32_t d = 4;
+        res = c + d;
+        assert(res == b && "Wrong matrix sum\n");
+        res = c - d;
+        assert(res == e && "Wrong matrix substraction\n");
+        res = c * d;
+        assert(res == a && "Wrong matrix element-by multiplication\n");
+        res = c / d;
+        assert(res == f && "Wrong matrix division\n");
+        
+    } catch (std::logic_error &ex) {
+        assert(ex.what());
+    }
+    std::cout << "OK" << std::endl;
+}
+
+/* Test 12 */
+/* Operations Number op Matrix */
+void test_ops_mat_num_3()
+{
+    print_test_number();
+    try {
+        Matrix a(3, 4, 12), b(3, 4, 7), c(3, 4, 3), e(3, 4, 1), res(3, 4);
+        int32_t d = 4;
+        res = d + c;
+        assert(res == b && "Wrong matrix sum\n");
+        res = d - c;
+        assert(res == e && "Wrong matrix substraction\n");
+        res = d * c;
+        assert(res == a && "Wrong matrix element-by multiplication\n");
+        res = d / c;
+        assert(res == e && "Wrong matrix division\n");
+    } catch (std::logic_error &ex) {
+        assert(ex.what());
+    }
+    std::cout << "OK" << std::endl;
+}
+
+/* Test 13 */
+/* Matrix transposition */
+void test_transp()
+{
+    print_test_number();
+    try {
+        Matrix a(3, 4), b(4, 3), c(4, 4);
+        for (size_t i = 0; i < 3; ++i) {
+            for (size_t j = 0; j < 4; ++j) {
+                a[i][j] = b[j][i] = j - i;
+            }
+        }
+        assert(a.transp() == b && "Wrong matrix transposition\n");
+        for (size_t i = 0; i < 4; ++i) {
+            for (size_t j = 0; j < 4; ++j) {
+                c[i][j] = j - i;
+            }
+        }
+        Matrix d(c), t(c);
+        d *= -1;
+        c.transp();
+        assert(!(t == c) && c == d && "Wrong matrix transposition\n");
+    } catch (std::logic_error &ex) {
+        assert(ex.what());
+    }
+    std::cout << "OK" << std::endl;
+}
+
+/* Test 14 */
+/* Correct matrix multiplication */
+void test_dot_correct()
+{
+    print_test_number();
+    try {
+        Matrix a(5, 4), b(4, 3), c(5, 3, 0);
+        for (size_t i = 0; i < 5; ++i) {
+            for (size_t j = 0; j < 4; ++j) {
+                a[i][j] = i + j;
+            }
+        }
+        for (size_t i = 0; i < 4; ++i) {
+            for (size_t j = 0; j < 3; ++j) {
+                b[i][j] = i - j;
+            }
+        }
+        for (size_t i = 0; i < 5; ++i) {
+            for (size_t j = 0; j < 3; ++j) {
+                for (size_t k = 0; k < 4; ++k) {
+                    c[i][j] += a[i][k] * b[k][j];
+                }
+            }
+        }
+        assert(c == dot(a, b) && "Wrong matrix multiplication\n");
+        Matrix e = dot(b, a);
+    } catch (std::logic_error &ex) {
+        assert(ex.what());
+    }
+    std::cout << "OK" << std::endl;
+}
+
+/* Test 15 */
+/* Incorrect matrix multiplication */
+void test_dot_incorrect()
+{
+    print_test_number();
+    try {
+        Matrix a(5, 4, 1), b(4, 3, 2);
+        Matrix c = dot(b, a);
+        std::cout << c;
+        assert("Undetected incorrect matrix multiplication\n");
+    } catch (std::logic_error &ex) {
+        std::cout << "Correct logic_error detected: " << ex.what() << std::endl;
+    }
+    std::cout << "OK" << std::endl;
+}
 
 
 int main() 
@@ -187,45 +393,15 @@ int main()
     test_constructors_correct();
     test_constructors_incorrect();
     test_equation();
-    
-    
-    
-    /*constexpr size_t n = 2, m = 2;
-    Matrix a(m, n, 10), b(m, n, 5);
-    Matrix c = a + b, d = a - b, e = a * b, f = a / b;
-    int32_t q = 2;
-    
-    std::cout << a << std::endl;
-    std::cout << b << std::endl;
-    std::cout << c << std::endl;
-    std::cout << d << std::endl;
-    std::cout << e << std::endl;
-    std::cout << f << std::endl;
-    
-    c = a + q;
-    d = a - q;
-    e = a * q;
-    f = a / q;
-    
-    std::cout << c << std::endl;
-    std::cout << d << std::endl;
-    std::cout << e << std::endl;
-    std::cout << f << std::endl;
-    
-    c = q + a;
-    d = q - a;
-    e = q * a;
-    f = q / a;
-    
-    std::cout << c << std::endl;
-    std::cout << d << std::endl;
-    std::cout << e << std::endl;
-    std::cout << f << std::endl;
-    
-    std::cout << Matrix(10) + 1 << std::endl;
-    */
-    //a[0][n] = 0;
-    //a[n][0] = 0;
-       
+    test_out();
+    test_ops_mat_mat_1();
+    test_ops_mat_mat_2();
+    test_ops_mat_num_1();
+    test_ops_mat_num_2();
+    test_ops_mat_num_3();
+    test_transp();
+    test_dot_correct();
+    test_dot_incorrect();
+
     return 0;
 }

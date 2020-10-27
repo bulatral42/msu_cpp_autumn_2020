@@ -30,7 +30,7 @@ public:
     ProxyMatrix operator [](const size_t m) const;
     friend std::ostream &operator <<(std::ostream &, const Matrix &);
     
-    const Matrix transp(bool inplace = true);  /* Inplace is only for squared */
+    Matrix transp(bool inplace = true);  /* Inplace is only for squared */
     
     const Matrix &operator +=(const Matrix &);
     const Matrix &operator -=(const Matrix &);

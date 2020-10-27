@@ -1,5 +1,5 @@
 #include "matrix.h"
-//#include <cstddef>
+#include <cstddef>
 #include <exception>
 #include <sstream>
 #include <iostream>
@@ -86,7 +86,7 @@ ProxyMatrix Matrix::operator [](const size_t idx) const {
     return ProxyMatrix(head + columns * idx, columns);
 }
 
-const Matrix Matrix::transp(bool inplace) {
+Matrix Matrix::transp(bool inplace) {
     if (inplace && rows == columns) {
         for (size_t i = 0; i < rows; ++i) {
             for (size_t j = 0; j < i; ++j) {
@@ -187,14 +187,10 @@ const Matrix &Matrix::operator /=(const int32_t val) {
 std::ostream &operator <<(std::ostream &out, const Matrix &mat) {
     for (size_t i = 0; i < mat.rows; ++i) {
         for (size_t j = 0; j < mat.columns - 1; ++j) {
-            std::cout << mat.head[i * mat.columns + j] << "\t";
+            out << mat.head[i * mat.columns + j] << "\t";
         }
-        std::cout << mat.head[i * mat.columns + mat.columns - 1];
-        if (i < mat.rows - 1) {
-            std::cout << std::endl;
-        }
+        out << mat.head[i * mat.columns + mat.columns - 1] << std::endl;  
     }
-
     return out;
 }
 
@@ -208,23 +204,25 @@ Matrix operator +(const Matrix &a, const Matrix &b) {
 }
 Matrix operator -(const Matrix &a, const Matrix &b) {
     if (a.get_rows() == 1 && a.get_columns() == 1) {
-        return Matrix(b) -= a[0][0];
+        Matrix c(b);
+        c *= -1;
+        return c + a[0][0];
     } else {
-        return Matrix(a) += b;
+        return Matrix(a) -= b;
     }
 }
 Matrix operator *(const Matrix &a, const Matrix &b) {
     if (a.get_rows() == 1 && a.get_columns() == 1) {
         return Matrix(b) *= a[0][0];
     } else {
-        return Matrix(a) += b;
+        return Matrix(a) *= b;
     }
 }
 Matrix operator /(const Matrix &a, const Matrix &b) {
     if (a.get_rows() == 1 && a.get_columns() == 1) {
-        return Matrix(b) /= a[0][0];
+        return Matrix(b.get_rows(), b.get_columns(), a[0][0]) /= b;
     } else {
-        return Matrix(a) += b;
+        return Matrix(a) /= b;
     }
 }
 
