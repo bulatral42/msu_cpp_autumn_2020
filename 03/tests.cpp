@@ -140,7 +140,7 @@ void test_constructors_incorrect()
 }
 
 /* Test 6 */
-/* Exual matrices -- operator == */
+/* Equal matrices -- operator == */
 void test_equation()
 {
     print_test_number();
@@ -213,6 +213,34 @@ void test_ops_mat_mat_1()
     } catch (std::logic_error &ex) {
         assert(ex.what());
     }
+    try{
+        Matrix q(3, 4, 5), p(4, 3, 2);
+        q += p;
+        assert("Undetected wrong matrix sum\n");
+    } catch (std::logic_error &ex) {
+        std::cout << "Correct logic_error detected: " << ex.what() << std::endl;
+    }
+    try{
+        Matrix q(3, 4, 5), p(4, 3, 2);
+        q -= p;
+        assert("Undetected wrong matrix substracion\n");
+    } catch (std::logic_error &ex) {
+        std::cout << "Correct logic_error detected: " << ex.what() << std::endl;
+    }
+    try{
+        Matrix q(3, 4, 5), p(4, 3, 2);
+        q *= p;
+        assert("Undetected wrong matrix multiplication\n");
+    } catch (std::logic_error &ex) {
+        std::cout << "Correct logic_error detected: " << ex.what() << std::endl;
+    }
+    try{
+        Matrix q(3, 4, 5), p(4, 3, 2);
+        q /= p;
+        assert("Undetected wrong matrix division\n");
+    } catch (std::logic_error &ex) {
+        std::cout << "Correct logic_error detected: " << ex.what() << std::endl;
+    }    
     std::cout << "OK" << std::endl;
 }
 
@@ -235,6 +263,34 @@ void test_ops_mat_mat_2()
         
     } catch (std::logic_error &ex) {
         assert(ex.what());
+    }
+    try{
+        Matrix q(3, 4, 5), p(4, 3, 2);
+        Matrix s = q + p;
+        assert("Undetected wrong matrix sum\n");
+    } catch (std::logic_error &ex) {
+        std::cout << "Correct logic_error detected: " << ex.what() << std::endl;
+    }
+    try{
+        Matrix q(3, 4, 5), p(4, 3, 2);
+        Matrix s = q - p;
+        assert("Undetected wrong matrix substracion\n");
+    } catch (std::logic_error &ex) {
+        std::cout << "Correct logic_error detected: " << ex.what() << std::endl;
+    }
+    try{
+        Matrix q(3, 4, 5), p(4, 3, 2);
+        Matrix s = q * p;
+        assert("Undetected wrong matrix multiplication\n");
+    } catch (std::logic_error &ex) {
+        std::cout << "Correct logic_error detected: " << ex.what() << std::endl;
+    }
+    try{
+        Matrix q(3, 4, 5), p(4, 3, 2);
+        Matrix s = q / p;
+        assert("Undetected wrong matrix division\n");
+    } catch (std::logic_error &ex) {
+        std::cout << "Correct logic_error detected: " << ex.what() << std::endl;
     }
     std::cout << "OK" << std::endl;
 }
