@@ -8,7 +8,9 @@ class ProxyMatrix{
     size_t col_cnt; 
 public:
     ProxyMatrix(int32_t *row_ptr, size_t col_cnt);
-    int32_t &operator[](const size_t idx);
+    
+    const int32_t &operator [](const size_t idx) const;
+    int32_t &operator [](const size_t idx);
 };
     
 class Matrix{
@@ -27,29 +29,33 @@ public:
     size_t get_rows() const;
     size_t get_columns() const;
     
-    ProxyMatrix operator [](const size_t m) const;
+    const ProxyMatrix operator [](const size_t m) const;
+    ProxyMatrix operator [](const size_t m);
     friend std::ostream &operator <<(std::ostream &, const Matrix &);
     
     Matrix transp(bool inplace = true);  /* Inplace is only for squared */
     
-    const Matrix &operator +=(const Matrix &);
-    const Matrix &operator -=(const Matrix &);
-    const Matrix &operator *=(const Matrix &);
-    const Matrix &operator /=(const Matrix &);
-    bool operator ==(const Matrix &);
+    Matrix &operator +=(const Matrix &);
+    Matrix &operator -=(const Matrix &);
+    Matrix &operator *=(const Matrix &);
+    Matrix &operator /=(const Matrix &);
     
-    const Matrix &operator +=(const int32_t);
-    const Matrix &operator -=(const int32_t);
-    const Matrix &operator *=(const int32_t);
-    const Matrix &operator /=(const int32_t);
+    Matrix &operator +=(const int32_t);
+    Matrix &operator -=(const int32_t);
+    Matrix &operator *=(const int32_t);
+    Matrix &operator /=(const int32_t);
     
-    
+    friend bool operator ==(const Matrix &, const Matrix &);
+    friend bool operator !=(const Matrix &, const Matrix &);
     friend Matrix dot(const Matrix &, const Matrix &);  /* Matrix multiplication */
 };
 
 std::ostream &operator <<(std::ostream &, const Matrix &);
 
 Matrix dot(const Matrix &, const Matrix &);
+
+bool operator ==(const Matrix &, const Matrix &);
+bool operator !=(const Matrix &, const Matrix &);
 
 Matrix operator +(const Matrix &, const Matrix &);
 Matrix operator -(const Matrix &, const Matrix &);

@@ -14,6 +14,13 @@ int32_t &ProxyMatrix::operator[](const size_t idx) {
     return row_ptr[idx];
 }
 
+const int32_t &ProxyMatrix::operator [](const size_t idx) const {
+    if (idx >= col_cnt) {
+        throw std::out_of_range("Out of column index");
+    }
+    return row_ptr[idx];
+}
+
 
 /* Matrix constructors, operator =, destructor */
 Matrix::Matrix(const size_t m, const size_t n, const int32_t val) : rows{m}, columns{n} {
@@ -44,6 +51,9 @@ Matrix::~Matrix() {
 }
 
 const Matrix &Matrix::operator =(const Matrix &mat) {
+    if (this == &mat) {
+        return *this;
+    }
     if (rows * columns != mat.rows * mat.columns) {
         delete[] head;
         head = new int32_t[mat.rows * mat.columns];
@@ -66,26 +76,23 @@ size_t Matrix::get_columns() const {
     return columns;
 }
 
-bool Matrix::operator ==(const Matrix &other) {
-    if (rows != other.rows || columns != other.columns) {
-        throw std::logic_error("Matrices' shapes do not match");
-    }
-    for (size_t i = 0; i < rows * columns; ++i) {
-        if (head[i] != other.head[i]) {
-            return false;
-        }
-    }
-    return true;
-}
-
 /* Element indexing */
-ProxyMatrix Matrix::operator [](const size_t idx) const {
+ProxyMatrix Matrix::operator [](const size_t idx) {
     if (idx >= rows) {
         throw std::out_of_range("Out of row index");
     }
     return ProxyMatrix(head + columns * idx, columns);
 }
 
+const ProxyMatrix Matrix::operator [](const size_t idx) const {
+    if (idx >= rows) {
+        throw std::out_of_range("Out of row index");
+    }
+    return ProxyMatrix(head + columns * idx, columns);
+}
+
+
+/* Matrix transposing */
 Matrix Matrix::transp(bool inplace) {
     if (inplace && rows == columns) {
         for (size_t i = 0; i < rows; ++i) {
@@ -106,7 +113,7 @@ Matrix Matrix::transp(bool inplace) {
 }
 
 /* Matrix & Matrix operations */
-const Matrix &Matrix::operator +=(const Matrix &mat) {
+Matrix &Matrix::operator +=(const Matrix &mat) {
     if (mat.rows != rows || mat.columns != columns) {
         throw std::logic_error("Matrices shapes do not match");
     }
@@ -116,7 +123,7 @@ const Matrix &Matrix::operator +=(const Matrix &mat) {
     return *this;
 }
 
-const Matrix &Matrix::operator -=(const Matrix &mat) {
+Matrix &Matrix::operator -=(const Matrix &mat) {
     if (mat.rows != rows || mat.columns != columns) {
         throw std::logic_error("Matrices' shapes do not match");
     }
@@ -126,7 +133,7 @@ const Matrix &Matrix::operator -=(const Matrix &mat) {
     return *this;
 }
 
-const Matrix &Matrix::operator *=(const Matrix &mat) {
+Matrix &Matrix::operator *=(const Matrix &mat) {
     if (mat.rows != rows || mat.columns != columns) {
         throw std::logic_error("Matrices' shapes do not match");
     }
@@ -136,7 +143,7 @@ const Matrix &Matrix::operator *=(const Matrix &mat) {
     return *this;
 }
 
-const Matrix &Matrix::operator /=(const Matrix &mat) {
+Matrix &Matrix::operator /=(const Matrix &mat) {
     if (mat.rows != rows || mat.columns != columns) {
         throw std::logic_error("Matrices' shapes do not match");
     }
@@ -151,28 +158,28 @@ const Matrix &Matrix::operator /=(const Matrix &mat) {
 
 
 /* Matrix & Number operations */
-const Matrix &Matrix::operator +=(const int32_t val) {
+Matrix &Matrix::operator +=(const int32_t val) {
     for (size_t i = 0; i < columns * rows; ++i) {
         head[i] += val;
     }
     return *this;
 }
 
-const Matrix &Matrix::operator -=(const int32_t val) {
+Matrix &Matrix::operator -=(const int32_t val) {
     for (size_t i = 0; i < columns * rows; ++i) {
         head[i] -= val;
     }
     return *this;
 }
 
-const Matrix &Matrix::operator *=(const int32_t val) {
+Matrix &Matrix::operator *=(const int32_t val) {
     for (size_t i = 0; i < columns * rows; ++i) {
         head[i] *= val;
     }
     return *this;
 }
 
-const Matrix &Matrix::operator /=(const int32_t val) {
+Matrix &Matrix::operator /=(const int32_t val) {
     if (val == 0) {
         throw std::logic_error("Divide by zero");
     }
@@ -195,6 +202,25 @@ std::ostream &operator <<(std::ostream &out, const Matrix &mat) {
 }
 
 
+/* Matrix comparisons */
+bool operator ==(const Matrix &m1, const Matrix &m2) {
+    if (m1.rows != m2.rows || m1.columns != m2.columns) {
+        throw std::logic_error("Matrices' shapes do not match");
+    }
+    for (size_t i = 0; i < m1.rows * m1.columns; ++i) {
+        if (m1.head[i] != m2.head[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool operator !=(const Matrix &m1, const Matrix &m2) {
+    return !(m1 == m2);
+}
+
+
+/* Binary operations */
 Matrix operator +(const Matrix &a, const Matrix &b) {
     if (a.get_rows() == 1 && a.get_columns() == 1) {
         return Matrix(b) += a[0][0];
@@ -243,6 +269,8 @@ Matrix operator /(const Matrix &a, const int32_t b) {
     return Matrix(a) /= b;
 }
 
+
+/* Matrix multiplication */
 Matrix dot(const Matrix &a, const Matrix &b) {
     size_t m = a.rows, n = a.columns, k = b.columns;
     if (n != b.rows) {

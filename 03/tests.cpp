@@ -42,6 +42,8 @@ void test_elem_correct()
         }
         a[1][3] = -8;
         assert(a[1][3] = -8 && a[0][0] == 4 && a[2][5] == 4 && "Incorrect element set\n");
+        const Matrix b(2, 2, 1);
+        assert(b[1][1] == 1 && "Wrong element returned\n");
     } catch (std::logic_error &ex) {
         assert(ex.what());
     }
@@ -71,7 +73,7 @@ void test_elem_incorrect()
 }
 
 /* Test 4 */
-/* Correct constructors using */
+/* Correct constructors using and operator = */
 void test_constructors_correct() 
 {
     print_test_number();
@@ -84,23 +86,29 @@ void test_constructors_correct()
             assert("Conversion constructor error\n");
         }
         if (c.get_rows() != 2 || c.get_columns() != 3) {
-            for (size_t i = 0; i < 2; ++i) {
-                for (size_t j = 0; j < 3; ++j) {
-                    if (c[i][j] != 0) {
-                        assert("Two args constructor error\n");
-                    }
+            assert("Two args constructor error\n");
+        }
+        for (size_t i = 0; i < 2; ++i) {
+            for (size_t j = 0; j < 3; ++j) {
+                if (c[i][j] != 0) {
+                    assert("Two args constructor error\n");
                 }
             }
         }
-        if (c.get_rows() != 3 || c.get_columns() != 4) {
-            for (size_t i = 0; i < 3; ++i) {
-                for (size_t j = 0; j < 4; ++j) {
-                    if (c[i][j] != 5) {
-                        assert("Three args constructor error\n");
-                    }
+        if (d.get_rows() != 3 || d.get_columns() != 4) {
+            assert("Three args constructor error\n");
+        }
+        for (size_t i = 0; i < 3; ++i) {
+            for (size_t j = 0; j < 4; ++j) {
+                if (d[i][j] != 5) {
+                    assert("Three args constructor error\n");
                 }
             }
         }
+        Matrix e(2, 3, 1);
+        e = c;
+        assert(c == e && "Wrong matrix assignment\n");
+        c = c;
     } catch (std::logic_error &ex) {
         assert(ex.what());
     }
@@ -140,7 +148,7 @@ void test_constructors_incorrect()
 }
 
 /* Test 6 */
-/* Equal matrices -- operator == */
+/* Equal and unequal matrices -- operator ==, operator != */
 void test_equation()
 {
     print_test_number();
@@ -151,8 +159,8 @@ void test_equation()
                 a[i][j] = b[i][j] = -1;
             }
         }
-        assert(a == b && "Equal matrices marked as unequal\n");
-        assert(!(a == c) && "Unequal matrices marked as equal\n");
+        assert(a == b && !(a != b) && "Equal matrices marked as unequal\n");
+        assert(!(a == c) && a != c && "Unequal matrices marked as equal\n");
     } catch (std::logic_error &ex) {
         assert(ex.what());
     }
@@ -241,6 +249,13 @@ void test_ops_mat_mat_1()
     } catch (std::logic_error &ex) {
         std::cout << "Correct logic_error detected: " << ex.what() << std::endl;
     }    
+    try {
+        Matrix aa(3, 4, 12), bb(3, 4, 2), cc(3, 4, 3), dd(3, 4, 2);
+        bb *= cc *= dd;
+        assert(bb == aa && "Wrong matrix element-by multiplication\n");
+    } catch (std::logic_error &ex) {
+        assert(ex.what());
+    }
     std::cout << "OK" << std::endl;
 }
 
@@ -312,6 +327,14 @@ void test_ops_mat_num_1()
         c /= d;
         assert(c == cc && "Wrong matrix division\n");
         
+    } catch (std::logic_error &ex) {
+        assert(ex.what());
+    }
+    try {
+        Matrix a(2, 3, 2), b(2, 3, 3), c(2, 3, 9);
+        int32_t d = 4;
+        a += b += d;
+        assert(a == c && "Wrong matrix sum\n");
     } catch (std::logic_error &ex) {
         assert(ex.what());
     }
