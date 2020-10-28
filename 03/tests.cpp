@@ -251,7 +251,7 @@ void test_ops_mat_mat_1()
     }    
     try {
         Matrix aa(3, 4, 12), bb(3, 4, 2), cc(3, 4, 3), dd(3, 4, 2);
-        bb *= cc *= dd;
+        (bb *= cc) *= dd;
         assert(bb == aa && "Wrong matrix element-by multiplication\n");
     } catch (std::logic_error &ex) {
         assert(ex.what());
@@ -333,7 +333,7 @@ void test_ops_mat_num_1()
     try {
         Matrix a(2, 3, 2), b(2, 3, 3), c(2, 3, 9);
         int32_t d = 4;
-        a += b += d;
+        (a += b) += d;
         assert(a == c && "Wrong matrix sum\n");
     } catch (std::logic_error &ex) {
         assert(ex.what());
