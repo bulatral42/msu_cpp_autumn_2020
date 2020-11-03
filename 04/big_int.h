@@ -8,9 +8,9 @@ constexpr int BASE_LEN = 6;
 constexpr uint64_t BASE = 1000000;
 class BigInt{
 
-    bool neg{false};  /* 0 is non-negative */
-    uint64_t *digits{nullptr};
-    size_t len{1}; 
+    bool neg_{false};  /* 0 is non-negative */
+    uint64_t *digits_{nullptr};
+    size_t len_{1}; 
     
 public:
     BigInt(const int64_t n = 0);
@@ -24,6 +24,7 @@ public:
     BigInt &operator =(BigInt &&);
     
     friend std::ostream &operator <<(std::ostream &, const BigInt &);
+    std::string to_string() const;
     
     BigInt &operator +=(const BigInt &);
     BigInt &operator -=(const BigInt &);
@@ -41,8 +42,6 @@ public:
 };
 
 std::ostream &operator <<(std::ostream &, const BigInt &);
-
-BigInt dot(const BigInt &, const BigInt &);
 
 bool operator ==(const BigInt &, const BigInt &);
 bool operator !=(const BigInt &, const BigInt &);

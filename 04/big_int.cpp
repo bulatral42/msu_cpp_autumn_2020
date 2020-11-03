@@ -7,20 +7,20 @@
 #include <iomanip>
 
 
-/* BigInt constructors, operator =, destructor */
+/* BigInt constructors, copy and move, destructor */
 BigInt::BigInt(const int64_t n) {
     if (n < 0) {
-        neg = true;
+        neg_ = true;
     }
-    digits = new uint64_t[1];
-    digits[0] = neg ? -n : n;
+    digits_ = new uint64_t[1];
+    digits_[0] = neg_ ? -n : n;
 }
 
 BigInt::BigInt(const std::string &s) {
     auto it1 = s.cbegin();
     for (; it1 != s.cend() && isspace(*it1); ++it1) {}
     if (*it1 == '-' || *it1 == '+') {
-        neg = *it1 == '-';
+        neg_ = *it1 == '-';
         ++it1;
     } else if (!isdigit(*it1)) {
         throw std::logic_error("Invalid string to interpret as a number");
@@ -36,98 +36,86 @@ BigInt::BigInt(const std::string &s) {
     size_t s_len = s_norm.size();
     if (s_len == 0) {
         if (pre_zeros) {
-            digits = new uint64_t[1];
-            digits[0] = 0;
-            neg = false;
-            len = 1;
+            digits_ = new uint64_t[1];
+            digits_[0] = 0;
+            neg_ = false;
+            len_ = 1;
         } else {
             throw std::logic_error("Invalid string to interpret as a number");
         }
     } else {
-        len = (s_len + BASE_LEN - 1) / BASE_LEN;
+        len_ = (s_len + BASE_LEN - 1) / BASE_LEN;
         size_t head = s_len % BASE_LEN;
-        digits = new uint64_t[len];
+        digits_ = new uint64_t[len_];
         size_t idx = 0;
         if (head > 0) {
             std::string tmp(s_norm.cbegin(), s_norm.cbegin() + head);
-            digits[len - 1] = std::stoull(tmp);
+            digits_[len_ - 1] = std::stoull(tmp);
             ++idx;
         }
         it1 = s_norm.cbegin() + head;
         for (; it1 != s_norm.cend() ; it1 += BASE_LEN, ++idx) {
-            digits[len - 1 - idx] = std::stoull(std::string(it1, it1 + BASE_LEN));
+            digits_[len_ - 1 - idx] = std::stoull(std::string(it1, it1 + BASE_LEN));
         }
     }
 }
 
 
-BigInt::BigInt(const BigInt &n) : neg{n.neg}, len{n.len} {
-    digits = new uint64_t[len];
-    std::copy(n.digits, n.digits + len, digits);
+BigInt::BigInt(const BigInt &n) : neg_{n.neg_}, len_{n.len_} {
+    digits_ = new uint64_t[len_];
+    std::copy(n.digits_, n.digits_ + len_, digits_);
 }
 
-BigInt::BigInt(BigInt &&n) : neg{std::move(n.neg)}, len{std::move(n.len)}{
-    digits = n.digits;
-    n.digits = nullptr;
-    n.neg = false;
-    n.len = 0;
+BigInt::BigInt(BigInt &&n) : neg_{std::move(n.neg_)}, len_{std::move(n.len_)}{
+    digits_ = n.digits_;
+    n.digits_ = nullptr;
+    n.neg_ = false;
+    n.len_ = 0;
 }
     
 BigInt::~BigInt() {
-    delete[] digits;
+    delete[] digits_;
 }
     
 
 BigInt &BigInt::operator =(const BigInt &n) {
-    std::cout << "Copy operator=" << std::endl;
     if (this == &n) {
         return *this;
     }
-    if (len != n.len) {
-        uint64_t *tmp = new uint64_t[n.len];
-        delete[] digits;
-        digits = tmp;
+    if (len_ != n.len_) {
+        uint64_t *tmp = new uint64_t[n.len_];
+        delete[] digits_;
+        digits_ = tmp;
     }
-    len = n.len;
-    neg = n.neg;
-    std::copy(n.digits, n.digits + len, digits);
+    len_ = n.len_;
+    neg_ = n.neg_;
+    std::copy(n.digits_, n.digits_ + len_, digits_);
     return *this;
 }
 
 BigInt &BigInt::operator =(BigInt &&n) {
-    std::cout << "Move operator=" << std::endl;
     if (this == &n) {
         return *this;
     }
-    neg = std::move(n.neg);
-    len = std::move(n.len);
-    digits = n.digits;
-    n.digits = nullptr;
-    n.neg = false;
-    n.len = 0;
+    neg_ = std::move(n.neg_);
+    len_ = std::move(n.len_);
+    digits_ = n.digits_;
+    n.digits_ = nullptr;
+    n.neg_ = false;
+    n.len_ = 0;
     return *this;
-}
-
-
-BigInt BigInt::operator -() const {
-    BigInt tmp(*this);
-    tmp.neg = !neg;
-    if (tmp.digits[tmp.len - 1] == 0) {
-        tmp.neg = false;
-    }
-    return tmp;
 }
     
     
 /* BigInt & BigInt operations */
 BigInt &BigInt::operator +=(const BigInt &n) {
-    if (neg ^ n.neg) {
+    if (neg_ ^ n.neg_) {
         *this -= -n;
         return *this;
     }
     
-    uint64_t *short_ptr{digits}, *long_ptr{n.digits};
-    size_t short_len{len}, long_len{n.len};
+    uint64_t *short_ptr{digits_}, *long_ptr{n.digits_};
+    size_t short_len{len_}, long_len{n.len_};
     if (short_len > long_len) {
         std::swap(short_len, long_len);
         std::swap(short_ptr, long_ptr);
@@ -142,15 +130,9 @@ BigInt &BigInt::operator +=(const BigInt &n) {
         } else {
             over_flag = 0;
         }
-        for (size_t j = 0; j < i; ++ j) {
-            //std::cout << "TMP[" << j << "] = " << tmp[j] << std::endl;
-        }
     }
     for (size_t i = short_len; i < long_len; ++i) {
         tmp[i] = long_ptr[i] + over_flag;
-        for (size_t j = 0; j < i; ++ j) {
-            //std::cout << "TMP[" << j << "] = " << tmp[j] << std::endl;
-        }
         if (tmp[i] >= BASE) {
             tmp[i] -= BASE;
             over_flag = 1;
@@ -160,32 +142,30 @@ BigInt &BigInt::operator +=(const BigInt &n) {
         }
         
     }
-    len = long_len;
+    len_ = long_len;
     if (over_flag == 1) {
         tmp[long_len] = 1;
-        ++len;
+        ++len_;
     }
-    delete[] digits;
-    digits = tmp;
+    delete[] digits_;
+    digits_ = tmp;
     return *this;
 }
 
 BigInt &BigInt::operator -=(const BigInt &n) {
-    if (neg ^ n.neg) {
+    if (neg_ ^ n.neg_) {
         *this += -n;
         return *this;
     }
-    uint64_t *short_ptr{digits}, *long_ptr{n.digits};
-    size_t short_len{len}, long_len{n.len};
-    if ((*this >= n) ^ neg) {
-        neg = false;
+    uint64_t *short_ptr{digits_}, *long_ptr{n.digits_};
+    size_t short_len{len_}, long_len{n.len_};
+    if ((*this >= n) ^ neg_) {
+        neg_ = false;
         std::swap(short_len, long_len);
         std::swap(short_ptr, long_ptr);
     } else {
-        neg = true;
-    }
-    //std::cout << long_ptr[0] << "   " << short_ptr[0] << std::endl;
-    
+        neg_ = true;
+    }    
     /* We consider [long] - [short] */
     uint64_t *tmp = new uint64_t[long_len];
     uint64_t over_flag = 0;
@@ -204,90 +184,102 @@ BigInt &BigInt::operator -=(const BigInt &n) {
         if (long_ptr[i] < over_flag) {
             tmp[i] = long_ptr[i] + BASE - over_flag;
             over_flag = 1;
-            //std::cout << i << "  " << tmp[i] << std::endl;
         } else {
             tmp[i] = long_ptr[i] - over_flag;
             over_flag = 0;
-            //std::cout << i << "  " << tmp[i] << std::endl;
             break;
         }   
     }
     int new_len = long_len - 1;
     for (; new_len >= 0 && tmp[new_len] == 0; --new_len) {}
     if (new_len < 0) {  /* Result is zero */
-        len = 1;
-        neg = false;
+        len_ = 1;
+        neg_ = false;
     } else {
-        len = new_len + 1;
+        len_ = new_len + 1;
     }
-    //std::cout << len << std::endl;
-    uint64_t *tmp2 = new uint64_t[len];
-    std::copy(tmp, tmp + len, tmp2);
+    uint64_t *tmp2 = new uint64_t[len_];
+    std::copy(tmp, tmp + len_, tmp2);
     delete[] tmp;
-    delete[] digits;
-    digits = tmp2;
+    delete[] digits_;
+    digits_ = tmp2;
     return *this;
 }
 
 BigInt &BigInt::operator *=(const BigInt &n) {
-    int new_len = len + n.len;
+    int new_len = len_ + n.len_;
     uint64_t *res = new uint64_t[new_len];
     memset(res, 0, new_len * sizeof(res[0]));
-    for (size_t i = 0; i < len; ++i) {
-        for (size_t j = 0; j < n.len; ++j) {
-            res[i + j] += digits[i] * n.digits[j];
+    for (size_t i = 0; i < len_; ++i) {
+        for (size_t j = 0; j < n.len_; ++j) {
+            res[i + j] += digits_[i] * n.digits_[j];
             if (res[i + j] >= BASE) {
                 res[i + j + 1] += res[i + j] / BASE;
                 res[i + j] %= BASE;
             }
         }
     }
-    neg = neg ^ n.neg;
     for (--new_len; new_len >= 0 && res[new_len] == 0; --new_len) {}
     if (new_len < 0) {  /* Result is zero */
-        len = 1;
+        len_ = 1;
         delete[] res;
         res = new uint64_t[1];
         res[0] = 0;
-        neg = false;
+        neg_ = false;
     } else {
-        len = new_len + 1;
+        len_ = new_len + 1;
     }
-    //std::cout << "LEN: " << len << std::endl;
-    delete[] digits;
-    digits = res;
+    delete[] digits_;
+    digits_ = res;
+    neg_ ^= n.neg_;
     return *this;
 }
 
 
+/* Unary minus */
+BigInt BigInt::operator -() const {
+    BigInt tmp(*this);
+    tmp.neg_ = !neg_;
+    if (tmp.digits_[tmp.len_ - 1] == 0) {
+        tmp.neg_ = false;
+    }
+    return tmp;
+}
+
 /* Output */
 std::ostream &operator <<(std::ostream &out, const BigInt &n) {
-    if (n.neg) {
+    if (n.neg_) {
     out << '-';
     }
-    out << n.digits[n.len - 1];
+    out << n.digits_[n.len_ - 1];
     char old_fill;
     size_t old_width;
     old_width = out.width();
     old_fill = out.fill();
-    for (int l = (int)n.len - 2; l >= 0; --l) {
+    for (int l = (int)n.len_ - 2; l >= 0; --l) {
         out.width(BASE_LEN);
         out.fill('0');
-        out << n.digits[l];
+        out << n.digits_[l];
     }
     out.width(old_width);
     out.fill(old_fill);
     return out;
 }
 
+std::string BigInt::to_string() const {
+    std::ostringstream tmp;
+    tmp << *this;
+    return tmp.str();
+}
+
 
 /* BigInt comparisons */
 bool operator ==(const BigInt &a, const BigInt &b) {
-    if (a.neg != b.neg && a.len != b.len) {
+    if (a.neg_ != b.neg_ && a.len_ != b.len_) {
         return false;
     }
-    for (size_t i = 0; i < a.len; ++i) {
-        if (a.digits[i] != b.digits[i]) {
+    for (size_t i = 0; i < a.len_; ++i) {
+        if (a.digits_[i] != b.digits_[i]) {
             return false;
         }
     }
@@ -295,26 +287,26 @@ bool operator ==(const BigInt &a, const BigInt &b) {
 }
 
 bool operator <(const BigInt &a, const BigInt &b) {
-    if (a.neg ^ b.neg) {  /* a and b have different signs */
-        return a.neg;
+    if (a.neg_ ^ b.neg_) {  /* a and b have different signs */
+        return a.neg_;
     }
-    if (a.neg) {
-        if (a.len != b.len) {
-            return a.len > b.len;
+    if (a.neg_) {
+        if (a.len_ != b.len_) {
+            return a.len_ > b.len_;
         }
-        for (int l = a.len - 1; l >= 0; --l) {
-            if (a.digits[l] != b.digits[l]) {
-                return a.digits[l] > b.digits[l];
+        for (int l = a.len_ - 1; l >= 0; --l) {
+            if (a.digits_[l] != b.digits_[l]) {
+                return a.digits_[l] > b.digits_[l];
             }
         }
         return false;
     } else {
-        if (a.len != b.len) {
-            return a.len < b.len;
+        if (a.len_ != b.len_) {
+            return a.len_ < b.len_;
         }
-        for (int l = a.len - 1; l >= 0; --l) {
-            if (a.digits[l] != b.digits[l]) {
-                return a.digits[l] < b.digits[l];
+        for (int l = a.len_ - 1; l >= 0; --l) {
+            if (a.digits_[l] != b.digits_[l]) {
+                return a.digits_[l] < b.digits_[l];
             }
         }
         return false;
@@ -322,27 +314,27 @@ bool operator <(const BigInt &a, const BigInt &b) {
 }
 
 bool operator <=(const BigInt &a, const BigInt &b) {
-    if (a.neg ^ b.neg) {  /* a and b have different signs */
-        return a.neg;
+    if (a.neg_ ^ b.neg_) {  /* a and b have different signs */
+        return a.neg_;
     }
-    if (a.neg) {
-        if (a.len != b.len) {
-            return a.len > b.len;
+    if (a.neg_) {
+        if (a.len_ != b.len_) {
+            return a.len_ > b.len_;
         }
-        for (int l = a.len - 1; l >= 0; --l) {
-            if (a.digits[l] != b.digits[l]) {
-                return a.digits[l] > b.digits[l];
+        for (int l = a.len_ - 1; l >= 0; --l) {
+            if (a.digits_[l] != b.digits_[l]) {
+                return a.digits_[l] > b.digits_[l];
             }
             
         }
         return true;
     } else {
-        if (a.len != b.len) {
-            return a.len < b.len;
+        if (a.len_ != b.len_) {
+            return a.len_ < b.len_;
         }
-        for (int l = a.len - 1; l >= 0; --l) {
-            if (a.digits[l] != b.digits[l]) {
-                return a.digits[l] < b.digits[l];
+        for (int l = a.len_ - 1; l >= 0; --l) {
+            if (a.digits_[l] != b.digits_[l]) {
+                return a.digits_[l] < b.digits_[l];
             }
         }
         return true;

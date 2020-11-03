@@ -67,10 +67,10 @@ int main()
     
     
     BigInt res = 1, a{"97865891"};
-    for (int i = 0; i < 9999; ++i) {
+    /*for (int i = 0; i < 9999; ++i) {
         res *= a;
         std::cout << "Iteration " << i << " ended" << std::endl;
-    }
-    std::cout << res << std::endl;
+    }*/
+    std::cout << "q" << a.to_string() << "w" << std::endl;
     return 0;
 }
