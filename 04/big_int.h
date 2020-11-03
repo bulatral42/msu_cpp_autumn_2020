@@ -10,7 +10,9 @@ class BigInt{
 
     bool neg_{false};  /* 0 is non-negative */
     uint64_t *digits_{nullptr};
-    size_t len_{1}; 
+    size_t len_{1};
+    
+    void check_() const;
     
 public:
     BigInt(const int64_t n = 0);
@@ -25,6 +27,7 @@ public:
     
     friend std::ostream &operator <<(std::ostream &, const BigInt &);
     std::string to_string() const;
+    size_t get_len() const;
     
     BigInt &operator +=(const BigInt &);
     BigInt &operator -=(const BigInt &);

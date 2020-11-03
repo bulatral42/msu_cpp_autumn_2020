@@ -23,13 +23,13 @@ BigInt::BigInt(const std::string &s) {
         neg_ = *it1 == '-';
         ++it1;
     } else if (!isdigit(*it1)) {
-        throw std::logic_error("Invalid string to interpret as a number");
+        throw std::invalid_argument("Invalid string to interpret as a number");
     }
     bool pre_zeros{false};
     for (; it1 != s.cend() && *it1 == '0'; ++it1) {
         pre_zeros = true;
     }
-
+    
     auto it2 = it1;
     for (; it2 != s.cend() && isdigit(*it2); ++it2) {}
     std::string s_norm(it1, it2);
@@ -41,7 +41,7 @@ BigInt::BigInt(const std::string &s) {
             neg_ = false;
             len_ = 1;
         } else {
-            throw std::logic_error("Invalid string to interpret as a number");
+            throw std::invalid_argument("Invalid string to interpret as a number");
         }
     } else {
         len_ = (s_len + BASE_LEN - 1) / BASE_LEN;
@@ -60,7 +60,6 @@ BigInt::BigInt(const std::string &s) {
     }
 }
 
-
 BigInt::BigInt(const BigInt &n) : neg_{n.neg_}, len_{n.len_} {
     digits_ = new uint64_t[len_];
     std::copy(n.digits_, n.digits_ + len_, digits_);
@@ -76,12 +75,12 @@ BigInt::BigInt(BigInt &&n) : neg_{std::move(n.neg_)}, len_{std::move(n.len_)}{
 BigInt::~BigInt() {
     delete[] digits_;
 }
-    
 
 BigInt &BigInt::operator =(const BigInt &n) {
     if (this == &n) {
         return *this;
     }
+    n.check_();
     if (len_ != n.len_) {
         uint64_t *tmp = new uint64_t[n.len_];
         delete[] digits_;
@@ -97,6 +96,7 @@ BigInt &BigInt::operator =(BigInt &&n) {
     if (this == &n) {
         return *this;
     }
+    n.check_();
     neg_ = std::move(n.neg_);
     len_ = std::move(n.len_);
     digits_ = n.digits_;
@@ -105,15 +105,23 @@ BigInt &BigInt::operator =(BigInt &&n) {
     n.len_ = 0;
     return *this;
 }
-    
-    
+
+
+/* Data validation check */
+void BigInt::check_() const {
+    if (digits_ == nullptr || len_ <= 0) {
+        throw std::logic_error("Invalid number");
+    }
+}
+
+
 /* BigInt & BigInt operations */
 BigInt &BigInt::operator +=(const BigInt &n) {
     if (neg_ ^ n.neg_) {
         *this -= -n;
         return *this;
     }
-    
+    n.check_();
     uint64_t *short_ptr{digits_}, *long_ptr{n.digits_};
     size_t short_len{len_}, long_len{n.len_};
     if (short_len > long_len) {
@@ -157,6 +165,7 @@ BigInt &BigInt::operator -=(const BigInt &n) {
         *this += -n;
         return *this;
     }
+    n.check_();
     uint64_t *short_ptr{digits_}, *long_ptr{n.digits_};
     size_t short_len{len_}, long_len{n.len_};
     if ((*this >= n) ^ neg_) {
@@ -207,6 +216,7 @@ BigInt &BigInt::operator -=(const BigInt &n) {
 }
 
 BigInt &BigInt::operator *=(const BigInt &n) {
+    n.check_();
     int new_len = len_ + n.len_;
     uint64_t *res = new uint64_t[new_len];
     memset(res, 0, new_len * sizeof(res[0]));
@@ -238,6 +248,7 @@ BigInt &BigInt::operator *=(const BigInt &n) {
 
 /* Unary minus */
 BigInt BigInt::operator -() const {
+    (*this).check_();
     BigInt tmp(*this);
     tmp.neg_ = !neg_;
     if (tmp.digits_[tmp.len_ - 1] == 0) {
@@ -246,8 +257,10 @@ BigInt BigInt::operator -() const {
     return tmp;
 }
 
+
 /* Output */
 std::ostream &operator <<(std::ostream &out, const BigInt &n) {
+    n.check_();
     if (n.neg_) {
     out << '-';
     }
@@ -272,9 +285,24 @@ std::string BigInt::to_string() const {
     return tmp.str();
 }
 
+size_t BigInt::get_len() const {
+    if (len_ <= 0) {
+        return 0;
+    }
+    size_t size = BASE_LEN * (len_ - 1);
+    uint64_t tmp = digits_[len_ - 1];
+    while (tmp > 0) {
+        ++size;
+        tmp /= 10;
+    }
+    return size;
+}
+
 
 /* BigInt comparisons */
 bool operator ==(const BigInt &a, const BigInt &b) {
+    a.check_();
+    b.check_();
     if (a.neg_ != b.neg_ && a.len_ != b.len_) {
         return false;
     }
@@ -287,6 +315,8 @@ bool operator ==(const BigInt &a, const BigInt &b) {
 }
 
 bool operator <(const BigInt &a, const BigInt &b) {
+    a.check_();
+    b.check_();
     if (a.neg_ ^ b.neg_) {  /* a and b have different signs */
         return a.neg_;
     }
@@ -314,6 +344,8 @@ bool operator <(const BigInt &a, const BigInt &b) {
 }
 
 bool operator <=(const BigInt &a, const BigInt &b) {
+    a.check_();
+    b.check_();
     if (a.neg_ ^ b.neg_) {  /* a and b have different signs */
         return a.neg_;
     }
