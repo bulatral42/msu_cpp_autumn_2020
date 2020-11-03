@@ -7,7 +7,7 @@
 void print_test_number()
 {
     static int n{1};
-    std::cout << "Test " << n << ": ";
+    std::cout << "Test " << n << ": " << std::endl;
     ++n;
 }
 
@@ -30,7 +30,7 @@ void test_out_to_string()
         std::cout << ex.what() << std::endl;
         assert("std::logic_error is caught");
     }
-    std::cout << "OK" << std::endl;
+    std::cout << "Report: OK" << std::endl;
 }
 
 
@@ -76,7 +76,7 @@ void test_compare()
         std::cout << ex.what() << std::endl;
         assert("std::logic_error is caught");
     }
-    std::cout << "OK" << std::endl;
+    std::cout << "Report: OK" << std::endl;
 }
 
 
@@ -118,7 +118,7 @@ void test_from_string()
     } catch (std::logic_error &ex) {
         std::cout << "Correct logic_error detected: " << ex.what() << std::endl;
     }
-    std::cout << "OK" << std::endl;
+    std::cout << "Report: OK" << std::endl;
 }
 
 
@@ -159,7 +159,7 @@ void test_copy_move()
     } catch (std::logic_error &ex) {
         std::cout << "Correct logic_error detected: " << ex.what() << std::endl;
     }
-    std::cout << "OK" << std::endl;
+    std::cout << "Report: OK" << std::endl;
 }
 
 
@@ -209,7 +209,7 @@ void test_add()
         std::cout << ex.what() << std::endl;
         assert("std::logic_error is caught");
     }
-    std::cout << "OK" << std::endl;
+    std::cout << "Report: OK" << std::endl;
 }
 
 
@@ -259,7 +259,7 @@ void test_sub()
         std::cout << ex.what() << std::endl;
         assert("std::logic_error is caught");
     }
-    std::cout << "OK" << std::endl;
+    std::cout << "Report: OK" << std::endl;
 }
 
 
@@ -315,7 +315,7 @@ void test_mult()
         std::cout << ex.what() << std::endl;
         assert("std::logic_error is caught");
     }
-    std::cout << "OK" << std::endl;
+    std::cout << "Report: OK" << std::endl;
 }
 
 
@@ -331,7 +331,7 @@ void test_u_minus() {
         std::cout << ex.what() << std::endl;
         assert("std::logic_error is caught");
     }
-    std::cout << "OK" << std::endl;
+    std::cout << "Report: OK" << std::endl;
 }
 
 

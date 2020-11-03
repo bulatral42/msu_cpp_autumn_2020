@@ -3,9 +3,10 @@
 #include <cstddef>
 #include <sstream>
 
-/* Numbers are presented in base 1e18 as arrays of digits */
+/* Numbers are presented in base 1e6 as arrays of digits */
 constexpr int BASE_LEN = 6;
 constexpr uint64_t BASE = 1000000;
+
 class BigInt{
 
     bool neg_{false};  /* 0 is non-negative */
