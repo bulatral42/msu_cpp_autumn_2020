@@ -4,9 +4,8 @@
 #include <sstream>
 
 /* Numbers are presented in base 1e18 as arrays of digits */
-constexpr int BASE_LEN = 18;
-constexpr uint64_t BASE = 1000000000000000000;
-
+constexpr int BASE_LEN = 6;
+constexpr uint64_t BASE = 1000000;
 class BigInt{
 
     bool neg{false};  /* 0 is non-negative */

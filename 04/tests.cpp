@@ -25,17 +25,27 @@ int main()
     BigInt c(a);
     std::cout << a << std::endl;
     std::cout << b << std::endl;*/
-    BigInt a{100}, b{10};
-    const BigInt c{-100};
-    BigInt d = -10;
-    /*std::cout << a + b << std::endl;
+    //BigInt a{"999999999999999999999999999999999999999999999999999999999999"}, b{10};
+    //const BigInt c{-100};
+    //BigInt d = -10, e = 0;
+    /*std::cout << a * b << std::endl;
+    std::cout << b * a << std::endl;
+    std::cout << a * d << std::endl;
+    std::cout << d * a << std::endl;
+    std::cout << a * e << std::endl;*/
+    //std::cout << a * a << std::endl;
+
+
+/*std::cout << a + b << std::endl;
     std::cout << b + a << std::endl;
     std::cout << a - b << std::endl;
-    std::cout << b - a << std::endl;*/
+    std::cout << b - a << std::endl;
     std::cout << a + c << std::endl;
     std::cout << c + a << std::endl;
+    std::cout << a - c << std::endl;
+    std::cout << c - a << std::endl;
     std::cout << a - a << std::endl;
-    std::cout << c - c << std::endl;
+    std::cout << c - c << std::endl;*/
 
     /*a = b;
     std::cout << "a: " << a << std::endl;
@@ -54,5 +64,13 @@ int main()
     std::cout << "a: " << a << std::endl;
     std::cout << "b: " << b << std::endl;
     std::cout << "c: " << c << std::endl;*/
+    
+    
+    BigInt res = 1, a{"97865891"};
+    for (int i = 0; i < 9999; ++i) {
+        res *= a;
+        std::cout << "Iteration " << i << " ended" << std::endl;
+    }
+    std::cout << res << std::endl;
     return 0;
 }
