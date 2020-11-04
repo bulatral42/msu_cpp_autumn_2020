@@ -99,6 +99,7 @@ BigInt &BigInt::operator =(BigInt &&n) {
     n.check_();
     neg_ = std::move(n.neg_);
     len_ = std::move(n.len_);
+    delete[] digits_;
     digits_ = n.digits_;
     n.digits_ = nullptr;
     n.neg_ = false;
@@ -146,6 +147,9 @@ BigInt &BigInt::operator +=(const BigInt &n) {
             over_flag = 1;
         } else {
             over_flag = 0;
+            for (size_t j = i + 1; j < long_len; ++j) {
+                tmp[j] = long_ptr[j];
+            }
             break;
         }
         
@@ -174,7 +178,7 @@ BigInt &BigInt::operator -=(const BigInt &n) {
         std::swap(short_ptr, long_ptr);
     } else {
         neg_ = true;
-    }    
+    }
     /* We consider [long] - [short] */
     uint64_t *tmp = new uint64_t[long_len];
     uint64_t over_flag = 0;
@@ -187,7 +191,7 @@ BigInt &BigInt::operator -=(const BigInt &n) {
             tmp[i] = long_ptr[i] + BASE;
             tmp[i] -= over_flag + short_ptr[i];
             over_flag = 1;
-        }        
+        }
     }
     for (size_t i = short_len; i < long_len; ++i) {
         if (long_ptr[i] < over_flag) {
@@ -196,8 +200,11 @@ BigInt &BigInt::operator -=(const BigInt &n) {
         } else {
             tmp[i] = long_ptr[i] - over_flag;
             over_flag = 0;
+            for (size_t j = i + 1; j < long_len; ++j) {
+                tmp[j] = long_ptr[j];
+            }
             break;
-        }   
+        } 
     }
     int new_len = long_len - 1;
     for (; new_len >= 0 && tmp[new_len] == 0; --new_len) {}

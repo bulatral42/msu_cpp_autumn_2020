@@ -145,8 +145,8 @@ void test_copy_move()
     try {
         BigInt a("123");
         BigInt b(std::move(a));
-        std::cout << b;
-        assert("Undetected invalid conversion from string");
+        std::cout << a << b;
+        assert(0 && "Undetected invalid conversion from string");
     } catch (std::logic_error &ex) {
         std::cout << "Correct logic_error detected: " << ex.what() << std::endl;
     }
@@ -154,8 +154,8 @@ void test_copy_move()
         BigInt a("123");
         BigInt b;
         b = std::move(a);
-        std::cout << b;
-        assert("Undetected invalid conversion from string");
+        std::cout << a << b;
+        assert(0 && "Undetected invalid conversion from string");
     } catch (std::logic_error &ex) {
         std::cout << "Correct logic_error detected: " << ex.what() << std::endl;
     }
@@ -205,6 +205,12 @@ void test_add()
         BigInt d6(a6);
         d6 += b6;        
         assert(d6 == c6 && b6 + a6 == c6 && a6 + b6 == c6 && "Wrong addition");
+        
+        BigInt a7("5"), b7("999999999999911199999999999");
+        BigInt c7("-999999999999911200000000004");
+        BigInt d7(a7);
+        d7 += b7;        
+        assert(d7 == c7 && b7 + a7 == c7 && a7 + b7 == c7 && "Wrong substraction");
     } catch (std::logic_error &ex) {
         std::cout << ex.what() << std::endl;
         assert("std::logic_error is caught");
@@ -255,6 +261,12 @@ void test_sub()
         BigInt d6(a6);
         d6 -= b6;        
         assert(d6 == c6 && b6 - a6 == c6 && a6 - b6 == c6 && "Wrong substraction");
+        
+        BigInt a7("5"), b7("9999999999999999999999999999999");
+        BigInt c7("-9999999999999999999999999999994");
+        BigInt d7(a7);
+        d7 -= b7;        
+        assert(d7 == c7 && b7 - a7 == c7 && a7 - b7 == c7 && "Wrong substraction");
     } catch (std::logic_error &ex) {
         std::cout << ex.what() << std::endl;
         assert("std::logic_error is caught");
@@ -336,7 +348,7 @@ void test_u_minus() {
 
 
 int main() 
-{
+{  
     test_out_to_string();
     test_compare();
     test_from_string();
