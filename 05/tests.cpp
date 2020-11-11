@@ -98,7 +98,7 @@ void test_one_struct()
         assert(err == Error::NoError && "Incorrect return status");
         assert(x.a == y.a && x.b == y.b && x.c == y.c &&
                "Wrong (de)serialization");
-    } catch (std::exception &exc) {
+    } catch(const std::exception &exc) {
         std::cout << exc.what() << std::endl;
         assert("Error!");
     }
@@ -118,7 +118,7 @@ void test_one_struct()
                x.b5 == y.b5 && x.b6 == y.b6 && x.b7 == y.b7 &&
                x.a8 == y.a8 && x.a9 == y.a9 &&
                x.b10 == y.b10 && "Wrong (de)serialization");
-    } catch (std::exception &exc) {
+    } catch(const std::exception &exc) {
         std::cout << exc.what() << std::endl;
         assert("Error!");
     }
@@ -142,7 +142,7 @@ void test_diff_structs()
 
         assert(err == Error::CorruptedArchive &&
                "Undetected wrong deserialization");
-    } catch (std::exception &exc) {
+    } catch(const std::exception &exc) {
         std::cout << exc.what() << std::endl;
         assert("Error!");
     }
@@ -167,7 +167,7 @@ void test_substruct()
 
         assert(err == Error::NoError && "Incorrect return status");
         assert(x.a == y.a && x.b == y.b && "Wrong (de)serialization");
-    } catch (std::exception &exc) {
+    } catch(const std::exception &exc) {
         std::cout << exc.what() << std::endl;
         assert("Error!");
     }

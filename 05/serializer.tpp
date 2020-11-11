@@ -19,7 +19,7 @@ Error Serializer::write_(bool val) {
             out_ << "false" << SEP;
         }
         return Error::NoError;
-    } catch(std::exception &exc) {
+    } catch(const std::exception &exc) {
         return Error::SaveProblem;
     }
 }
@@ -28,7 +28,7 @@ Error Serializer::write_(uint64_t val) {
     try {
         out_ << val << SEP;
         return Error::NoError;
-    } catch(std::exception &exc) {
+    } catch(const std::exception &exc) {
         return Error::SaveProblem;
     }
 }
@@ -88,7 +88,7 @@ Error Deserializer::read_(bool &val) {
         } else {
             return Error::CorruptedArchive;
         }
-    } catch(std::exception &exc) {
+    } catch(const std::exception &exc) {
         return Error::CorruptedArchive;
     }
 }
@@ -99,7 +99,7 @@ Error Deserializer::read_(uint64_t &val) {
         in_ >> tmp;
         val = std::stoull(tmp);
         return Error::NoError;
-    } catch(std::exception &exc) {
+    } catch(const std::exception &exc) {
         return Error::CorruptedArchive;
     }
 }
