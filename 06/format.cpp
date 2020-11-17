@@ -9,7 +9,7 @@ format_exception::format_exception(const char *message) {
     }
     msg_[i] = 0;
 }
-const char* format_exception::what() const throw() {
+const char* format_exception::what() const noexcept {
     return msg_;
 }
 format_exception::~format_exception() = default;
