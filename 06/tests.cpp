@@ -17,7 +17,15 @@ struct Complex {
     int re_, im_;
     
     Complex(int re = 0, int im = 0) : re_{re}, im_{im} {}
-    
+    Complex(const Complex &obj) : re_{obj.re_}, im_{obj.im_} {
+        std::cout << "Complex (const &)" << std::endl;
+    }
+    /*Complex(Complex &obj) : re_{obj.re_}, im_{obj.im_} {
+        std::cout << "Complex (&)" << std::endl;
+    }*/
+    Complex(Complex &&obj) : re_{std::move(obj.re_)}, im_{std::move(obj.im_)} {
+        std::cout << "Complex (&&)" << std::endl;
+    }
     friend std::ostream &operator <<(std::ostream &out, Complex obj) {
         out << "(" << obj.re_ << ", " << obj.im_ << ")";
         return out;
@@ -34,8 +42,9 @@ void test_correct_use()
         Complex a(1, 2), b(3, 4), c(4, 6), d(2, 4);
         double fp{5.42};
         std::string out;
+        
         out = format("E: {0} + {1} = {2}, ok", a, b, c);
-        assert(out == "E: (1, 2) + (3, 4) = (4, 6), ok" && "Invalid formating");
+        assert(out == "E: (1, 2) + (3, 4) = (4, 6), ok" && "Invalid formating");     
         
         out = format("{0}+{0}={1}", a, "(2, 4)");
         assert(out == "(1, 2)+(1, 2)=(2, 4)" && "Invalid formating");
@@ -165,12 +174,29 @@ void test_format_argument_error()
     std::cout << "Report: OK" << std::endl;
 }
 
+void test_4() 
+{
+    print_test_number();
+    try {
+        Complex a(1, 2), b(3, 4), c(4, 6), d(2, 4);
+        std::string out;
+        out = format("{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}", std::move(a), std::move(a), std::move(a), std::move(a), a, a, a, a, a, a, a);
+        
+    } catch(const std::exception &exc) {
+        std::cout << exc.what() << std::endl;
+        assert("Error!");
+    }
+}
+
+
+
 
 int main() 
 {
     test_correct_use();
     test_format_index_error();
     test_format_argument_error();
-
+    test_4();
+    
     return 0;
 }

@@ -36,10 +36,10 @@ void set_at_zero(const std::string &, const std::string &,
 
 /* Template wrappers */
 template<class T>
-std::string format(const std::string &, T&&);
+std::string format(const std::string &&, T&&);
 
 template<class T, class... ArgsT>
-std::string format(const std::string &, T&&, ArgsT&&...);
+std::string format(const std::string &&, T&&, ArgsT&&...);
 
 #include "format.tpp"
 
