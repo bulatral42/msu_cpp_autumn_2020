@@ -4,7 +4,7 @@
 #include <sstream>
 #include <cctype>
 #include <exception>
-#include <vector>
+
 
 /* Exceptions */
 constexpr int MAX_MSG_LEN = 255;  /* Exception message buffer size */
@@ -36,10 +36,10 @@ void set_at_zero(const std::string &, const std::string &,
 
 /* Template wrappers */
 template<class T>
-std::string format(const std::string &, T&&);
+std::string format(const std::string &, const T &);
 
 template<class T, class... ArgsT>
-std::string format(const std::string &, T&&, ArgsT&&...);
+std::string format(const std::string &, const T &, const ArgsT&...);
 
 
 #include "format.tpp"
