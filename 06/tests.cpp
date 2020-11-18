@@ -20,9 +20,6 @@ struct Complex {
     Complex(const Complex &obj) : re_{obj.re_}, im_{obj.im_} {
         std::cout << "Complex (const &)" << std::endl;
     }
-    /*Complex(Complex &obj) : re_{obj.re_}, im_{obj.im_} {
-        std::cout << "Complex (&)" << std::endl;
-    }*/
     Complex(Complex &&obj) : re_{std::move(obj.re_)}, im_{std::move(obj.im_)} {
         std::cout << "Complex (&&)" << std::endl;
     }

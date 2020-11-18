@@ -30,29 +30,17 @@ struct format_argument_error : format_exception {
 
 
 /* Main operations */
-/*void set_at_zero(const std::string &, const std::string &,
+void set_at_zero(const std::string &, const std::string &,
                  std::string &, bool last_flag = false);
-*/
 
-std::string &substitute(const std::string &, 
-                        const std::vector<std::string> &, 
-                        std::string &);
-                
+
 /* Template wrappers */
-/*template<class T>
-std::string format(const std::string &&, T&&);
-
-template<class T, class... ArgsT>
-std::string format(const std::string &&, T&&, ArgsT&&...);*/
 template<class T>
-void vectorize_args(std::vector<std::string> &, T &&);
+std::string format(const std::string &, T&&);
 
-    
 template<class T, class... ArgsT>
-void vectorize_args(std::vector<std::string> &, T &&, ArgsT&&...);
+std::string format(const std::string &, T&&, ArgsT&&...);
 
-template<class... ArgsT>
-std::string format(const std::string &fmt_line, ArgsT&&... args);
 
 #include "format.tpp"
 

@@ -1,6 +1,6 @@
 /* Template wrappers */
-/*template<class T>
-std::string format(const std::string &&fmt_line, T &&arg)
+template<class T>
+std::string format(const std::string &fmt_line, T &&arg)
 {
     std::ostringstream out;
     out << arg;
@@ -11,43 +11,13 @@ std::string format(const std::string &&fmt_line, T &&arg)
 
 
 template<class T, class... ArgsT>
-std::string format(const std::string &&fmt_line, T &&arg, ArgsT&&... args)
+std::string format(const std::string &fmt_line, T &&arg, ArgsT&&... args)
 {
     std::ostringstream out;
     out << arg;
     std::string mid_result;
     set_at_zero(fmt_line, out.str(), mid_result, false);
-    std::cout << "before return format(std::fwd)" << std::endl;
-    return format(std::move(mid_result), std::forward<ArgsT>(args)...);
-}*/
-#include <iostream>
-template<class T>
-void vectorize_args(std::vector<std::string> &s_args, T &&arg)
-{
-    std::stringstream tmp;
-    tmp << arg;
-    s_args.emplace_back(tmp.str());
+
+    return format(mid_result, std::forward<ArgsT>(args)...);
 }
-
-    
-template<class T, class... ArgsT>
-void vectorize_args(std::vector<std::string> &s_args, T &&arg, ArgsT&&... args)
-{
-    std::stringstream tmp;
-    tmp << arg;
-    s_args.emplace_back(tmp.str());
-    vectorize_args(s_args, std::forward<ArgsT>(args)...);
-}
-
-
-template<class... ArgsT>
-std::string format(const std::string &fmt_line, ArgsT&&... args)
-{
-    std::vector<std::string> s_args;
-    vectorize_args(s_args, std::forward<ArgsT>(args)...);
-    
-    std::string res;
-    return substitute(fmt_line, s_args, res);
-}
-
 
