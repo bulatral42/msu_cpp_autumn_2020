@@ -44,6 +44,12 @@ std::string format(const std::string &&, T&&);
 
 template<class T, class... ArgsT>
 std::string format(const std::string &&, T&&, ArgsT&&...);*/
+template<class T>
+void vectorize_args(std::vector<std::string> &, T &&);
+
+    
+template<class T, class... ArgsT>
+void vectorize_args(std::vector<std::string> &, T &&, ArgsT&&...);
 
 template<class... ArgsT>
 std::string format(const std::string &fmt_line, ArgsT&&... args);

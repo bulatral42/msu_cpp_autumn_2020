@@ -26,7 +26,7 @@ struct Complex {
     Complex(Complex &&obj) : re_{std::move(obj.re_)}, im_{std::move(obj.im_)} {
         std::cout << "Complex (&&)" << std::endl;
     }
-    friend std::ostream &operator <<(std::ostream &out, Complex obj) {
+    friend std::ostream &operator <<(std::ostream &out, const Complex &obj) {
         out << "(" << obj.re_ << ", " << obj.im_ << ")";
         return out;
     }
@@ -183,6 +183,9 @@ void test_long()
         out = format("{0}{1}{2} {1}{0} {0}{2}{1}", a, b, c);
         assert(out == "(1, 2)(3, 4)(4, 6) (3, 4)(1, 2) (1, 2)(4, 6)(3, 4)" &&
                "Invalid formating");
+               
+        out = format("a = {0};", std::move(Complex(1, 2)));
+        assert(out == "a = (1, 2);" && "Invalid formating");
     } catch(const std::exception &exc) {
         std::cout << exc.what() << std::endl;
         assert("Error!");

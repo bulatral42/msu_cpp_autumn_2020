@@ -20,13 +20,13 @@ std::string format(const std::string &&fmt_line, T &&arg, ArgsT&&... args)
     std::cout << "before return format(std::fwd)" << std::endl;
     return format(std::move(mid_result), std::forward<ArgsT>(args)...);
 }*/
-
+#include <iostream>
 template<class T>
 void vectorize_args(std::vector<std::string> &s_args, T &&arg)
 {
     std::stringstream tmp;
     tmp << arg;
-    s_args.push_back(tmp.str());
+    s_args.emplace_back(tmp.str());
 }
 
     
@@ -35,8 +35,8 @@ void vectorize_args(std::vector<std::string> &s_args, T &&arg, ArgsT&&... args)
 {
     std::stringstream tmp;
     tmp << arg;
-    s_args.push_back(tmp.str());
-    vectorize_args(s_args, std::move(args)...);
+    s_args.emplace_back(tmp.str());
+    vectorize_args(s_args, std::forward<ArgsT>(args)...);
 }
 
 

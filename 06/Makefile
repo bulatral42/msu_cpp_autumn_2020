@@ -1,5 +1,5 @@
 CPP = g++
-FLAGS = -O1 -Wall -std=c++17
+FLAGS = -O2 -Wall -std=c++17
 
 all : tests.o
 	$(CPP) $(FLAGS) tests.o format.o -o tests
