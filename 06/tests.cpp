@@ -174,14 +174,15 @@ void test_format_argument_error()
     std::cout << "Report: OK" << std::endl;
 }
 
-void test_4() 
+void test_long() 
 {
     print_test_number();
     try {
-        Complex a(1, 2), b(3, 4), c(4, 6), d(2, 4);
+        Complex a(1, 2), b(3, 4), c(4, 6);
         std::string out;
-        out = format("{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}", std::move(a), std::move(a), std::move(a), std::move(a), a, a, a, a, a, a, a);
-        
+        out = format("{0}{1}{2} {1}{0} {0}{2}{1}", a, b, c);
+        assert(out == "(1, 2)(3, 4)(4, 6) (3, 4)(1, 2) (1, 2)(4, 6)(3, 4)" &&
+               "Invalid formating");
     } catch(const std::exception &exc) {
         std::cout << exc.what() << std::endl;
         assert("Error!");
@@ -196,7 +197,7 @@ int main()
     test_correct_use();
     test_format_index_error();
     test_format_argument_error();
-    test_4();
+    test_long();
     
     return 0;
 }

@@ -4,7 +4,7 @@
 #include <sstream>
 #include <cctype>
 #include <exception>
-
+#include <vector>
 
 /* Exceptions */
 constexpr int MAX_MSG_LEN = 255;  /* Exception message buffer size */
@@ -30,16 +30,23 @@ struct format_argument_error : format_exception {
 
 
 /* Main operations */
-void set_at_zero(const std::string &, const std::string &,
+/*void set_at_zero(const std::string &, const std::string &,
                  std::string &, bool last_flag = false);
+*/
 
-
+std::string &substitute(const std::string &, 
+                        const std::vector<std::string> &, 
+                        std::string &);
+                
 /* Template wrappers */
-template<class T>
+/*template<class T>
 std::string format(const std::string &&, T&&);
 
 template<class T, class... ArgsT>
-std::string format(const std::string &&, T&&, ArgsT&&...);
+std::string format(const std::string &&, T&&, ArgsT&&...);*/
+
+template<class... ArgsT>
+std::string format(const std::string &fmt_line, ArgsT&&... args);
 
 #include "format.tpp"
 
