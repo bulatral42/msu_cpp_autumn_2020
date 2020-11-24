@@ -32,8 +32,15 @@ struct Complex {
 
 int main() 
 {
-    Vector v;
+    int n = 5;
+    Vector<int> v(n);
+    for (int i = 0; i < n; ++i) {
+        v[i] = i;
+    }
     
-    
+    for (int i = 0; i < n; ++i) {
+        std::cout << v[i] << " ";
+    }
+    std::cout << std::endl;
     return 0;
 }

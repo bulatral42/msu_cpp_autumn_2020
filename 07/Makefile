@@ -7,14 +7,14 @@ all : tests.o
 test: tests
 	./tests
 
-tests.o: tests.cpp vector
+tests.o: tests.cpp
 	$(CPP) $(FLAGS) tests.cpp -c -o tests.o
 
 allocator: allocator.tpp
 
 iterator: iterator.tpp
 
-vector: allocator iterator vector.tpp
+vector: vector.tpp
 
 clean:
 	rm *.o tests

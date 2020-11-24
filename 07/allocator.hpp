@@ -4,39 +4,12 @@
 #include <exception>
 #include <iostream>
 
-/* Exceptions */
-constexpr int MAX_MSG_LEN = 255;  /* Exception message buffer size */
-
-struct format_exception : std::exception {
-    format_exception(const char *);
-    const char* what() const noexcept override;
-    ~format_exception();
-private:
-    char msg_[MAX_MSG_LEN + 1] = { 0 };
-};
-
-
-struct format_index_error : format_exception {
-    format_index_error(const char *);
-    ~format_index_error();
-};
-
-struct format_argument_error : format_exception {
-    format_argument_error(const char *);
-    ~format_argument_error();
-};
 
 constexpr int MAX_BLOCKS = 1024;
 
 template<class T>
-class Allocator
+class MyAllocator
 {
-    struct Storage {
-        T *ptrs[MAX_BLOCKS];
-        size_t lens[MAX_BLOCKS];
-    } storage;
-    size_t n_blocks{0};
-
 /*public:
     using value_type = T;
     using pointer = T *;
@@ -47,10 +20,11 @@ class Allocator
     using difference_type = std::ptrdiff_t;
 */
 public:
-    Allocator();
-    ~Allocator();
+    MyAllocator() = default;
+    ~MyAllocator() = default;
     T *allocate(size_t);
-    void deallocate(T *);
+    void deallocate(T *, size_t);
+    T *reallocate(T *, size_t, size_t);
 };
 
 #include "allocator.tpp"

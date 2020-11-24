@@ -1,60 +1,31 @@
 template<class T>
-Allocator<T>::Allocator() {
-   for (size_t i = 0; i < MAX_BLOCKS; ++i) {
-        storage.ptrs[i] = nullptr;
-        storage.lens[i] = 0;
-    }
-}
-
-template<class T>
-Allocator<T>::~Allocator() {
-    if (n_blocks != 0) {
-        std::cout << "ERROR: " << n_blocks << " left!" << std::endl;
-    }
-    for (size_t i = 0; i < MAX_BLOCKS; ++i) {
-        deallocate(storage.ptrs[i], storage.lens[i]);
-    }
-}    
-
-template<class T>
-T *Allocator<T>::allocate(size_t n_obj) {
-    if (n_blocks == MAX_BLOCKS) {
-        std::cout << "No memory" << std::endl;
-        return nullptr;
-    }
+T *MyAllocator<T>::allocate(size_t n_obj) {
     T *ptr = new T[n_obj];
-    if (ptr == nullptr) {
-        std::cout << "No memory" << std::endl;
-        return nullptr;
-    }
-    for (size_t i = 0; i < MAX_BLOCKS; ++i) {
-        if (storage.ptrs[i] == nullptr) {
-            storage.ptrs[i] = ptr;
-            storage.lens[i] = n_obj;
-            ++n_blocks;
-        }
-    }
     return ptr;
 }
 
 template<class T>
-void Allocator<T>::deallocate(T *ptr) {
+void MyAllocator<T>::deallocate(T *ptr, size_t size) {
     if (ptr == nullptr) {
         return;
     }
-    for (size_t i = 0; i < MAX_BLOCKS; ++i) {
-        if (storage.ptrs[i] == ptr) {
-            if (storage.lens[i] > 1) {
-                delete[] ptr;
-            } else {
-                delete ptr;
-            }
-            storage.ptrs[i] = nullptr;
-            storage.lens[i] = 0;
-            --n_blocks;
-            return;
-        }
+    if (size > 1) {
+        delete[] ptr;
+    } else {
+        delete ptr;
     }
-    throw std::logic_error("Deaalocationg unallocated ptr");
+}
+
+template<class T>
+T *MyAllocator<T>::reallocate(T *old_ptr, size_t old_size, size_t new_size) {
+    T *new_ptr = new T[new_size];
+    if (old_ptr == nullptr) {
+        old_size = 0;
+    }
+    for (size_t i = 0; i < new_size; ++i) {
+        new_ptr[i] = old_ptr[i];
+    }
+    deallocate(old_ptr, old_size);
+    return new_ptr;
 }
 

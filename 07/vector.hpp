@@ -6,36 +6,23 @@
 #include "allocator.hpp"
 
 
-/* Exceptions */
-constexpr int MAX_MSG_LEN = 255;  /* Exception message buffer size */
-
-struct format_exception : std::exception {
-    format_exception(const char *);
-    const char* what() const noexcept override;
-    ~format_exception();
-private:
-    char msg_[MAX_MSG_LEN + 1] = { 0 };
-};
+constexpr int SCALER = 2;
 
 
-struct format_index_error : format_exception {
-    format_index_error(const char *);
-    ~format_index_error();
-};
-
-struct format_argument_error : format_exception {
-    format_argument_error(const char *);
-    ~format_argument_error();
-};
-
-
-template<class T, class Allocator = Allocator<T>>
+template<class T, class Allocator = MyAllocator<T>>
 class Vector
 {
-    T *head{nullptr};
+    T *head_{nullptr};
     size_t size_{0}, capacity_{0};
+    Allocator alloc;
     
 public:
+    Vector(size_t);
+    Vector(size_t, const T&);
+    Vector(const Vector &);
+    Vector(Vector &&);
+    ~Vector();
+    
     const T operator [](const size_t) const;
     T &operator [](const size_t);
     void push_back(const T&);
