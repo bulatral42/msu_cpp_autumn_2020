@@ -53,7 +53,9 @@ T &Vector<T, Allocator>::operator [](const size_t idx) {
 template<class T, class Allocator>
 void Vector<T, Allocator>::push_back(const T &obj) {
     if (capacity_ == size_) {
-        alloc.reallocate(head_, capacity_, SCALER * capacity_);
+        size_t new_cap = capacity_ == 0 ? 8 : SCALER * capacity_;
+        head_ = alloc.reallocate(head_, capacity_, new_cap);
+        capacity_ = new_cap;
     }
     head_[size_++] = obj;
 }
@@ -69,8 +71,11 @@ void Vector<T, Allocator>::pop_back() {
 template<class T, class Allocator>
 void Vector<T, Allocator>::emplace_back(T &&obj) {
     if (capacity_ == size_) {
-        alloc.reallocate(head_, capacity_, SCALER * capacity_);
+        size_t new_cap = capacity_ == 0 ? 8 : SCALER * capacity_;
+        head_ = alloc.reallocate(head_, capacity_, new_cap);
+        capacity_ = new_cap;
     }
+
     head_[size_++] = std::move(obj);
 }
 
@@ -97,7 +102,8 @@ void Vector<T, Allocator>::clear() {
 template<class T, class Allocator>
 void Vector<T, Allocator>::resize(size_t new_size) {
     if (new_size > capacity_) {
-        alloc.reallocate(head_, capacity_, new_size);
+        head_ = alloc.reallocate(head_, capacity_, new_size);
+        capacity_ = new_size;
     }
     size_ = new_size;
 }
@@ -105,7 +111,8 @@ void Vector<T, Allocator>::resize(size_t new_size) {
 template<class T, class Allocator>
 void Vector<T, Allocator>::resize(size_t new_size, const T &obj) {
     if (new_size > capacity_) {
-        alloc.reallocate(head_, capacity_, new_size);
+        head_ = alloc.reallocate(head_, capacity_, new_size);
+        capacity_ = new_size;
     }
     for (size_t i = size_; i < new_size; ++i) {
         head_[i] = obj;
@@ -116,7 +123,8 @@ void Vector<T, Allocator>::resize(size_t new_size, const T &obj) {
 template<class T, class Allocator>
 void Vector<T, Allocator>::reserve(size_t new_cap) {
     if (new_cap > capacity_) {
-        alloc.reallocate(head_, capacity_, new_cap);
+        head_ = alloc.reallocate(head_, capacity_, new_cap);
+        capacity_ = new_cap;
     }
 }
 

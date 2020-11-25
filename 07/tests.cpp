@@ -90,9 +90,11 @@ int main()
         v[i] = Complex(i, 1 + i);
     }
     vec_out(v);
-    /*v.push_back(Complex(100, 200));
+    v.push_back(Complex(100, 200));
     vec_out(v);
     v.emplace_back(Complex(300, 400));
+    vec_out(v);
+    vec_out(v);
     vec_out(v);
     v.push_back(Complex(500, 600));
     vec_out(v);
@@ -105,7 +107,7 @@ int main()
     vec_out(v);
     v.resize(2);
     vec_out(v);
-    */
+    
     std::cout << "CNT: " << cnt << std::endl;
     std::cout << "DNT: " << dnt << std::endl;
     return 0;

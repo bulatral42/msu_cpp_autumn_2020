@@ -15,6 +15,8 @@ void MyAllocator<T>::deallocate(T *ptr, size_t size) {
         delete ptr;
     }
 */
+    std::cout << "before delete" << std::endl;
+    
     delete[] ptr;
 }
 
@@ -24,7 +26,7 @@ T *MyAllocator<T>::reallocate(T *old_ptr, size_t old_size, size_t new_size) {
     if (old_ptr == nullptr) {
         old_size = 0;
     }
-    for (size_t i = 0; i < new_size; ++i) {
+    for (size_t i = 0; i < old_size; ++i) {
         new_ptr[i] = old_ptr[i];
     }
     deallocate(old_ptr, old_size);
