@@ -1,35 +1,57 @@
 #pragma once
 
-#include <string>
-#include <sstream>
-#include <cctype>
-#include <exception>
+template<class Container>
+class Iterator : public std::iterator<std::forward_iterator_tag, typename Container::value_type>
+{
+public:
+    using pointer = typename Container::value_type *;
+    using value_type = typename Container::value_type;  
 
-
-/* Exceptions */
-constexpr int MAX_MSG_LEN = 255;  /* Exception message buffer size */
-
-struct format_exception : std::exception {
-    format_exception(const char *);
-    const char* what() const noexcept override;
-    ~format_exception();
 private:
-    char msg_[MAX_MSG_LEN + 1] = { 0 };
+    pointer current_;
+    
+    friend Container;
+    
+    Iterator(pointer); 
+    
+public:
+    Iterator(const Iterator &);
+    
+    bool operator ==(const Iterator &) const;
+    bool operator !=(const Iterator &) const;
+    
+    typename Iterator<Container>::value_type &operator *() const;
+    Iterator &operator ++();
+    Iterator operator ++(int);
+    
 };
 
 
-struct format_index_error : format_exception {
-    format_index_error(const char *);
-    ~format_index_error();
+template<class Container>
+class ReverseIterator : public std::iterator<std::forward_iterator_tag, typename Container::value_type>
+{
+public:
+    using pointer = typename Container::value_type *;
+    using value_type = typename Container::value_type;  
+
+private:
+    pointer current_;
+    
+    friend Container;
+    
+    ReverseIterator(pointer); 
+    
+public:
+    ReverseIterator(const ReverseIterator &);
+    
+    bool operator ==(const ReverseIterator &) const;
+    bool operator !=(const ReverseIterator &) const;
+    
+    typename ReverseIterator<Container>::value_type &operator *() const;
+    ReverseIterator &operator ++();
+    ReverseIterator operator ++(int);
+    
 };
 
-struct format_argument_error : format_exception {
-    format_argument_error(const char *);
-    ~format_argument_error();
-};
-
-
-
-
-#include "vector.tpp"
+#include "iterator.tpp"
 

@@ -1,10 +1,3 @@
-
-
-/*
-template<class T, class Allocator>
-Vector<T, Allocator>::
-*/
-
 template<class T, class Allocator>
 Vector<T, Allocator>::Vector(size_t size) : 
         head_{alloc.allocate(SCALER * size)}, 
@@ -30,7 +23,6 @@ Vector<T, Allocator>::Vector(Vector &&other) :
 }
 template<class T, class Allocator>
 Vector<T, Allocator>::~Vector() {
-    std::cout << "Cap: " << capacity_ << std::endl;
     alloc.deallocate(head_, capacity_);
 }
 
@@ -63,7 +55,7 @@ void Vector<T, Allocator>::push_back(const T &obj) {
 template<class T, class Allocator>
 void Vector<T, Allocator>::pop_back() {
     if (size_ == 0) {
-        throw std::out_of_range("Empty Vector");
+        throw std::out_of_range("Pop from empty Vector");
     }
     --size_;
 }
@@ -128,4 +120,23 @@ void Vector<T, Allocator>::reserve(size_t new_cap) {
     }
 }
 
-    
+template<class T, class Allocator>
+Iterator<Vector<T, Allocator>> Vector<T, Allocator>::begin() {
+    return Iterator<Vector<T, Allocator>>(head_);
+}
+
+template<class T, class Allocator>
+Iterator<Vector<T, Allocator>> Vector<T, Allocator>::end() {
+    return Iterator<Vector<T, Allocator>>(head_ + size_);
+}
+
+template<class T, class Allocator>
+ReverseIterator<Vector<T, Allocator>> Vector<T, Allocator>::rbegin() {
+    return ReverseIterator<Vector<T, Allocator>>(head_ + size_ - 1);
+}
+
+template<class T, class Allocator>
+ReverseIterator<Vector<T, Allocator>> Vector<T, Allocator>::rend() {
+    return ReverseIterator<Vector<T, Allocator>>(head_ - 1);
+}
+

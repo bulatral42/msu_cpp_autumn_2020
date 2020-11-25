@@ -4,9 +4,9 @@
 #include <cctype>
 #include <exception>
 #include "allocator.hpp"
+#include "iterator.hpp"
 
-
-constexpr int SCALER = 2;
+constexpr size_t SCALER = 2;
 
 
 template<class T, class Allocator = MyAllocator<T>>
@@ -17,6 +17,8 @@ class Vector
     Allocator alloc;
     
 public:
+    using value_type = T;
+    
     Vector(size_t size = 8);
     Vector(size_t, const T&);
     Vector(const Vector &);
@@ -25,23 +27,25 @@ public:
     
     const T operator [](const size_t) const;
     T &operator [](const size_t);
+    
     void push_back(const T&);
     void pop_back();
     void emplace_back(T &&);
+    
     bool empty() const;
     size_t size() const;
     size_t capacity() const;
+    
     void clear();
     void resize(size_t);
     void resize(size_t, const T &);
     void reserve(size_t);
     
-    /*
-    iterator begin();
-    iterator end();
-    reverse_iterator rbegin();
-    reverse_iterator rend();
-    */
+    Iterator<Vector<T, Allocator>> begin();
+    Iterator<Vector<T, Allocator>> end();
+    ReverseIterator<Vector<T, Allocator>> rbegin();
+    ReverseIterator<Vector<T, Allocator>> rend();
+  
 };
 
 

@@ -9,14 +9,6 @@ void MyAllocator<T>::deallocate(T *ptr, size_t size) {
     if (ptr == nullptr) {
         return;
     }
-/*    if (size > 1) {
-        delete[] ptr;
-    } else {
-        delete ptr;
-    }
-*/
-    std::cout << "before delete" << std::endl;
-    
     delete[] ptr;
 }
 
