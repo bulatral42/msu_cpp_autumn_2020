@@ -30,6 +30,7 @@ Vector<T, Allocator>::Vector(Vector &&other) :
 }
 template<class T, class Allocator>
 Vector<T, Allocator>::~Vector() {
+    std::cout << "Cap: " << capacity_ << std::endl;
     alloc.deallocate(head_, capacity_);
 }
 
@@ -48,17 +49,75 @@ T &Vector<T, Allocator>::operator [](const size_t idx) {
     }
     return head_[idx];
 }
-/*
-    void push_back(const T&);
-    T pop_back();
-    template<class... ArgsT>
-    void emplace_back(ArgsT&&...);
-    bool empty() const;
-    size_t size() const;
-    size_t capacity() const;
-    void clear();
-    void resize(size_t);
-    void resize(size_t, const T &);
-    void reserve(size_t);
-    */
+
+template<class T, class Allocator>
+void Vector<T, Allocator>::push_back(const T &obj) {
+    if (capacity_ == size_) {
+        alloc.reallocate(head_, capacity_, SCALER * capacity_);
+    }
+    head_[size_++] = obj;
+}
+
+template<class T, class Allocator>
+void Vector<T, Allocator>::pop_back() {
+    if (size_ == 0) {
+        throw std::out_of_range("Empty Vector");
+    }
+    --size_;
+}
+
+template<class T, class Allocator>
+void Vector<T, Allocator>::emplace_back(T &&obj) {
+    if (capacity_ == size_) {
+        alloc.reallocate(head_, capacity_, SCALER * capacity_);
+    }
+    head_[size_++] = std::move(obj);
+}
+
+
+
+template<class T, class Allocator>
+bool Vector<T, Allocator>::empty() const {
+    return size_ == 0;
+}
+
+template<class T, class Allocator>
+size_t Vector<T, Allocator>::size() const {
+    return size_;
+}
+template<class T, class Allocator>
+size_t Vector<T, Allocator>::capacity() const {
+    return capacity_;
+}
+
+template<class T, class Allocator>
+void Vector<T, Allocator>::clear() {
+    size_ = 0;
+}
+template<class T, class Allocator>
+void Vector<T, Allocator>::resize(size_t new_size) {
+    if (new_size > capacity_) {
+        alloc.reallocate(head_, capacity_, new_size);
+    }
+    size_ = new_size;
+}
+
+template<class T, class Allocator>
+void Vector<T, Allocator>::resize(size_t new_size, const T &obj) {
+    if (new_size > capacity_) {
+        alloc.reallocate(head_, capacity_, new_size);
+    }
+    for (size_t i = size_; i < new_size; ++i) {
+        head_[i] = obj;
+    }
+    size_ = new_size;
+}
+
+template<class T, class Allocator>
+void Vector<T, Allocator>::reserve(size_t new_cap) {
+    if (new_cap > capacity_) {
+        alloc.reallocate(head_, capacity_, new_cap);
+    }
+}
+
     

@@ -17,7 +17,7 @@ class Vector
     Allocator alloc;
     
 public:
-    Vector(size_t);
+    Vector(size_t size = 8);
     Vector(size_t, const T&);
     Vector(const Vector &);
     Vector(Vector &&);
@@ -26,9 +26,8 @@ public:
     const T operator [](const size_t) const;
     T &operator [](const size_t);
     void push_back(const T&);
-    T pop_back();
-    template<class... ArgsT>
-    void emplace_back(ArgsT&&...);
+    void pop_back();
+    void emplace_back(T &&);
     bool empty() const;
     size_t size() const;
     size_t capacity() const;
