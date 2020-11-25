@@ -66,7 +66,7 @@ void print_test_number()
 
 
 template<class T>
-void vec_out(const Vector<T> &vec) {
+void vector_out(const Vector<T> &vec) {
     std::cout << "Size: " << vec.size() << std::endl;
     std::cout << "Capacity: " << vec.capacity() << std::endl;
     for (size_t i = 0; i < vec.size(); ++i) {

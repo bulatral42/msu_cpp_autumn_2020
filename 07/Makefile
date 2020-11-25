@@ -4,7 +4,7 @@ FLAGS = -O2 -Wall -g -std=c++17
 all : tests.o
 	$(CPP) $(FLAGS) tests.o -o tests
 
-test: tests
+test: all
 	./tests
 
 tests.o: tests.cpp vector allocator iterator

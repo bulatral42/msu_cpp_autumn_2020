@@ -1,7 +1,9 @@
+/* Constructors and destructior */
 template<class T, class Allocator>
 Vector<T, Allocator>::Vector(size_t size) : 
         head_{alloc.allocate(SCALER * size)}, 
         size_{size}, capacity_{SCALER * size} {}
+
 template<class T, class Allocator>
 Vector<T, Allocator>::Vector(size_t size, const T &val) : 
         head_{alloc.allocate(SCALER * size)}, 
@@ -10,10 +12,12 @@ Vector<T, Allocator>::Vector(size_t size, const T &val) :
         head_[i] = val;
     }
 }
+
 template<class T, class Allocator>
 Vector<T, Allocator>::Vector(const Vector &other) : 
         head_{alloc.allocate(other.capacity_)}, 
         size_{other.size_}, capacity_{other.capacity_} {}
+
 template<class T, class Allocator>
 Vector<T, Allocator>::Vector(Vector &&other) : 
         head_{std::move(other.head_)}, size_{std::move(other.size_)},
@@ -21,11 +25,13 @@ Vector<T, Allocator>::Vector(Vector &&other) :
     other.head_ = nullptr;
     other.size_ = other.capacity_ = 0;
 }
+
 template<class T, class Allocator>
 Vector<T, Allocator>::~Vector() {
     alloc.deallocate(head_, capacity_);
 }
 
+/* Indexing */
 template<class T, class Allocator>
 const T Vector<T, Allocator>::operator [](const size_t idx) const {
     if (idx < 0 || idx >= size_) {
@@ -42,6 +48,7 @@ T &Vector<T, Allocator>::operator [](const size_t idx) {
     return head_[idx];
 }
 
+/* Push, emplace, pop */
 template<class T, class Allocator>
 void Vector<T, Allocator>::push_back(const T &obj) {
     if (capacity_ == size_) {
@@ -71,8 +78,7 @@ void Vector<T, Allocator>::emplace_back(T &&obj) {
     head_[size_++] = std::move(obj);
 }
 
-
-
+/* Stats */
 template<class T, class Allocator>
 bool Vector<T, Allocator>::empty() const {
     return size_ == 0;
@@ -82,15 +88,18 @@ template<class T, class Allocator>
 size_t Vector<T, Allocator>::size() const {
     return size_;
 }
+
 template<class T, class Allocator>
 size_t Vector<T, Allocator>::capacity() const {
     return capacity_;
 }
 
+/* Clear, resize, reserve */
 template<class T, class Allocator>
 void Vector<T, Allocator>::clear() {
     size_ = 0;
 }
+
 template<class T, class Allocator>
 void Vector<T, Allocator>::resize(size_t new_size) {
     if (new_size > capacity_) {
@@ -120,6 +129,7 @@ void Vector<T, Allocator>::reserve(size_t new_cap) {
     }
 }
 
+/* Iterators */
 template<class T, class Allocator>
 Iterator<Vector<T, Allocator>> Vector<T, Allocator>::begin() {
     return Iterator<Vector<T, Allocator>>(head_);
