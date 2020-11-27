@@ -25,3 +25,10 @@ T *MyAllocator<T>::reallocate(T *old_ptr, size_t old_size, size_t new_size) {
     return new_ptr;
 }
 
+template<class T>
+template<class... ArgsT>
+void MyAllocator<T>::construct(T *ptr, ArgsT&&... args) {
+    ptr->~T();
+    ::new((void *)ptr) T{std::forward<ArgsT>(args)...};
+}
+

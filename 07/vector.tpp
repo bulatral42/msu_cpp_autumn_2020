@@ -119,11 +119,8 @@ const T &Vector<T, Allocator>::emplace_back(ArgsT&&... args) {
         head_ = alloc.reallocate(head_, capacity_, new_cap);
         capacity_ = new_cap;
     }
-    T *emp_ptr = head_ + size_;
-    emp_ptr->~T();
-    new(emp_ptr) T{std::forward<ArgsT>(args)...};
-    ++size_;
-    return *emp_ptr;
+    alloc.construct(head_ + size_, std::forward<ArgsT>(args)...);
+    return head_[size_++];
 }
 
 /* Stats */
