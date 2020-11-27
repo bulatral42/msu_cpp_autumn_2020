@@ -19,7 +19,7 @@ T *MyAllocator<T>::reallocate(T *old_ptr, size_t old_size, size_t new_size) {
         old_size = 0;
     }
     for (size_t i = 0; i < old_size; ++i) {
-        new_ptr[i] = old_ptr[i];
+        new_ptr[i] = std::move(old_ptr[i]);
     }
     deallocate(old_ptr, old_size);
     return new_ptr;

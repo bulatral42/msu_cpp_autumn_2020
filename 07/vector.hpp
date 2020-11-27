@@ -22,12 +22,17 @@ public:
     Vector(Vector &&);
     ~Vector();
     
+    Vector &operator =(const Vector &);
+    Vector &operator =(Vector &&);
+    
     const T operator [](const size_t) const;
     T &operator [](const size_t);
     
-    void push_back(const T&);
+    void push_back(const T &);
+    void push_back(T &&);
     void pop_back();
-    void emplace_back(T &&);
+    template<class... ArgsT>
+    const T &emplace_back(ArgsT&&...);
     
     bool empty() const;
     size_t size() const;
@@ -37,6 +42,9 @@ public:
     void resize(size_t);
     void resize(size_t, const T &);
     void reserve(size_t);
+    
+    bool operator ==(const Vector &) const;
+    bool operator !=(const Vector &) const;
     
     Iterator<Vector<T, Allocator>> begin();
     Iterator<Vector<T, Allocator>> end();

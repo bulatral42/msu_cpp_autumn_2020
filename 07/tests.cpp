@@ -106,6 +106,81 @@ void test_indexing() {
     std::cout << "Result: OK" << std::endl;
 }
 
+
+void test_compare() {
+    print_test_number();
+    try {
+        Vector<Complex> v(2, Complex(2, 5)), w(2, Complex(2, 5));
+        assert(w == v && !(v != w) && "Comparison error");
+    } catch(const std::exception &ex) {
+        std::cout << "Exception caught: " << ex.what() << std::endl;
+        assert(0 && "Unexpected exception");
+    }
+    try {
+        Vector<Complex> v(2, Complex(2, 5)), w(3, Complex(2, 5));
+        assert(w != v && !(v == w) && "Comparison error");
+    } catch(const std::exception &ex) {
+        std::cout << "Exception caught: " << ex.what() << std::endl;
+        assert(0 && "Unexpected exception");
+    }
+    try {
+        Vector<Complex> v(2, Complex(1, 2)), w(2);
+        w[0] = Complex(1, 2);
+        w[1] = Complex(1, 10);
+        assert(w != v && !(v == w) && "Comparison error");
+        
+        w[1] = Complex(1, 2);
+        assert(w == v && !(v != w) && "Comparison error");
+    } catch(const std::exception &ex) {
+        std::cout << "Exception caught: " << ex.what() << std::endl;
+        assert(0 && "Unexpected exception");
+    }
+    std::cout << "Result: OK" << std::endl;
+}
+
+
+void test_copy_move() {
+    print_test_number();
+    try {
+        Vector<Complex> v(2, Complex(2, 5));
+        Vector<Complex> c(v);
+        assert(c == v && "Copy constructor error");
+    } catch(const std::exception &ex) {
+        std::cout << "Exception caught: " << ex.what() << std::endl;
+        assert(0 && "Unexpected exception");
+    }
+    try {
+        Vector<Complex> v(2, Complex(2, 5));
+        Vector<Complex> v_copy(v);
+        Vector<Complex> c(std::move(v));
+        assert(c == v_copy && v.size() == 0 && "Move constructor error");
+    } catch(const std::exception &ex) {
+        std::cout << "Exception caught: " << ex.what() << std::endl;
+        assert(0 && "Unexpected exception");
+    }
+    try {
+        Vector<Complex> v(2, Complex(2, 5));
+        Vector<Complex> c;
+        c = v;
+        assert(c == v && "Copy operator error");
+    } catch(const std::exception &ex) {
+        std::cout << "Exception caught: " << ex.what() << std::endl;
+        assert(0 && "Unexpected exception");
+    }
+    try {
+        Vector<Complex> v(2, Complex(2, 5));
+        Vector<Complex> v_copy(v);
+        Vector<Complex> c;
+        c = std::move(v);
+        assert(c == v_copy && v.size() == 0 && "Move operator error");
+    } catch(const std::exception &ex) {
+        std::cout << "Exception caught: " << ex.what() << std::endl;
+        assert(0 && "Unexpected exception");
+    }
+    std::cout << "Result: OK" << std::endl;
+}
+
+
 void test_stat() {
     print_test_number();
     try {
@@ -134,7 +209,7 @@ void test_push_pop_emplace_back() {
         }
         assert(v.size() == 9 && v[8] == Complex(7, 8) && "Error in push_back");
         
-        v.emplace_back(Complex(-1, -2));
+        v.emplace_back(-1, -2);
         assert(v.size() == 10 && v[9] == Complex(-1, -2) 
                && "Error in emplace_back");
                
@@ -223,6 +298,8 @@ int main()
 {
     test_indexing();
     test_stat();
+    test_compare();
+    test_copy_move();
     test_push_pop_emplace_back();
     test_clear_resize_reserve();
     test_iterate();

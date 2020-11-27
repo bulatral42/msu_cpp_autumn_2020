@@ -16,7 +16,11 @@ Vector<T, Allocator>::Vector(size_t size, const T &val) :
 template<class T, class Allocator>
 Vector<T, Allocator>::Vector(const Vector &other) : 
         head_{alloc.allocate(other.capacity_)}, 
-        size_{other.size_}, capacity_{other.capacity_} {}
+        size_{other.size_}, capacity_{other.capacity_} {
+    for (size_t i = 0; i < size_; ++i) {
+        head_[i] = other.head_[i];
+    }
+}
 
 template<class T, class Allocator>
 Vector<T, Allocator>::Vector(Vector &&other) : 
@@ -29,6 +33,36 @@ Vector<T, Allocator>::Vector(Vector &&other) :
 template<class T, class Allocator>
 Vector<T, Allocator>::~Vector() {
     alloc.deallocate(head_, capacity_);
+}
+
+/* Assignment */
+template<class T, class Allocator>
+Vector<T, Allocator> &Vector<T, Allocator>::operator =(const Vector &other) {
+    if (this == &other) {
+        return *this;
+    }
+    T *tmp = alloc.allocate(other.capacity_);
+    for (size_t i = 0; i < other.size_; ++i) {
+        tmp[i] = other.head_[i];
+    }
+    alloc.deallocate(head_, capacity_);
+    head_ = tmp;
+    size_ = other.size_;
+    capacity_ = other.capacity_;
+    return *this;
+}
+
+template<class T, class Allocator>
+Vector<T, Allocator> &Vector<T, Allocator>::operator =(Vector &&other) {
+    if (this == &other) {
+        return *this;
+    }
+    head_ = std::move(other.head_);
+    size_ = std::move(other.size_);
+    capacity_ = std::move(other.capacity_);
+    other.head_ = nullptr;
+    other.size_ = other.capacity_ = 0;
+    return *this;
 }
 
 /* Indexing */
@@ -60,6 +94,16 @@ void Vector<T, Allocator>::push_back(const T &obj) {
 }
 
 template<class T, class Allocator>
+void Vector<T, Allocator>::push_back(T &&obj) {
+    if (capacity_ == size_) {
+        size_t new_cap = capacity_ == 0 ? 8 : SCALER * capacity_;
+        head_ = alloc.reallocate(head_, capacity_, new_cap);
+        capacity_ = new_cap;
+    }
+    head_[size_++] = std::move(obj);
+}
+
+template<class T, class Allocator>
 void Vector<T, Allocator>::pop_back() {
     if (size_ == 0) {
         throw std::out_of_range("Pop from empty Vector");
@@ -68,14 +112,18 @@ void Vector<T, Allocator>::pop_back() {
 }
 
 template<class T, class Allocator>
-void Vector<T, Allocator>::emplace_back(T &&obj) {
+template<class... ArgsT>
+const T &Vector<T, Allocator>::emplace_back(ArgsT&&... args) {
     if (capacity_ == size_) {
         size_t new_cap = capacity_ == 0 ? 8 : SCALER * capacity_;
         head_ = alloc.reallocate(head_, capacity_, new_cap);
         capacity_ = new_cap;
     }
-
-    head_[size_++] = std::move(obj);
+    T *emp_ptr = head_ + size_;
+    emp_ptr->~T();
+    new(emp_ptr) T{std::forward<ArgsT>(args)...};
+    ++size_;
+    return *emp_ptr;
 }
 
 /* Stats */
@@ -127,6 +175,25 @@ void Vector<T, Allocator>::reserve(size_t new_cap) {
         head_ = alloc.reallocate(head_, capacity_, new_cap);
         capacity_ = new_cap;
     }
+}
+
+/* Comperisons */
+template<class T, class Allocator>
+bool Vector<T, Allocator>::operator ==(const Vector &other) const {
+    if(other.size_ != size_) {
+        return false;
+    }
+    for (size_t i = 0; i < size_; ++i) {
+        if (head_[i] != other.head_[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+template<class T, class Allocator>
+bool Vector<T, Allocator>::operator !=(const Vector &other) const {
+    return !(*this == other);
 }
 
 /* Iterators */
