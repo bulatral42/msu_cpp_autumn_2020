@@ -5,6 +5,9 @@
 #include <future>
 #include <functional>
 #include <queue>
+#include<iostream>
+
+const size_t DEFAULT_POOL_SIZE = std::thread::hardware_concurrency();
 
 
 class ThreadPool
@@ -17,7 +20,7 @@ class ThreadPool
     std::atomic<bool> still_working;
     
 public:
-    explicit ThreadPool(size_t pool_size = 4);
+    explicit ThreadPool(size_t pool_size = DEFAULT_POOL_SIZE);
     ~ThreadPool();
     
     template<class Func, class... ArgsT>

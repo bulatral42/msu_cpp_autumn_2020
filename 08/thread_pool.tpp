@@ -7,7 +7,7 @@ auto ThreadPool::exec(Func func, ArgsT... args) ->
     auto wrapper = 
             [this](Promise *p_ptr, Func func, ArgsT... args)
             {
-                make_task<Promise *, Func, ArgsT...>(p_ptr, func, args...);
+                make_task(p_ptr, func, args...);
             };
     std::function<void()> new_task = std::bind(wrapper, p_ptr, func, args...);
     q_lock.lock();
