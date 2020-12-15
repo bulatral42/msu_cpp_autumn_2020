@@ -1,5 +1,5 @@
 CPP = g++
-FLAGS = -O1 -Wall -std=c++17
+FLAGS = -O2 -Wall -std=c++17 -pthread
 
 all : tests.o threadsort.o
 	$(CPP) $(FLAGS) tests.o threadsort.o -o tests
