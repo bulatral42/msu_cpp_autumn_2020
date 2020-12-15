@@ -53,6 +53,8 @@ void test_th2()
         assert(0 && "std::exception is caught");
     }
     std::cout << "Report: OK" << std::endl;
+    remove("check1.bin");
+    remove("check1.bin_res.bin");
 }
 
 
@@ -91,6 +93,8 @@ void test_th8()
         assert(0 && "std::exception is caught");
     }
     std::cout << "Report: OK" << std::endl;
+    remove("check2.bin");
+    remove("check2.bin_res.bin");
 }
 
 
