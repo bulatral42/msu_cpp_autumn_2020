@@ -8,7 +8,7 @@
 #include "threadsort.hpp"
 
 
-constexpr size_t N = 1024;
+constexpr size_t N = 10000000;
 
 
 void print_test_number()
@@ -17,6 +17,7 @@ void print_test_number()
     std::cout << "Test " << n << ": " << std::endl;
     ++n;
 }
+
 
 /* Test 1 */
 /* 2 threads */
@@ -37,13 +38,12 @@ void test_th2()
 
         threadsort("check1.bin", 2);
         std::sort(vec.begin(), vec.end());
-        
         std::ifstream file2("check1.bin_res.bin", std::ios::binary);
         for (size_t i = 0; i < N; ++i) {
             uint64_t tmp;
             file2.read((char *)&tmp, sizeof(tmp));
             if (vec[i] != tmp) {
-                std::cout << "Dismath in index " << i << std::endl;
+                std::cout << "Dismath at index " << i << std::endl;
                 std::cout << vec[i] << " != " << tmp << std::endl;
                 assert(0 && "Wrong sorting");
             }
@@ -83,7 +83,7 @@ void test_th8()
             uint64_t tmp;
             file2.read((char *)&tmp, sizeof(tmp));
             if (vec[i] != tmp) {
-                std::cout << "Dismath in index " << i << std::endl;
+                std::cout << "Dismath at index " << i << std::endl;
                 std::cout << vec[i] << " != " << tmp << std::endl;
                 assert(0 && "Wrong sorting");
             }

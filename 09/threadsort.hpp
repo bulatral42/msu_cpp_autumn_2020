@@ -14,8 +14,8 @@
 
 
 
-constexpr size_t MAX_CHUNKS = 16;
-constexpr size_t CHUNK_CNT = 4;
+constexpr size_t MAX_CHUNKS = 512;
+constexpr size_t CHUNK_CNT = 128;
 
 constexpr size_t CHUNK_SIZE = CHUNK_CNT * sizeof(uint64_t);
 
